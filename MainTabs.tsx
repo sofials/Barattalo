@@ -10,12 +10,14 @@ import OffersIcon from './icons/offersIcon.svg';
 import AddIcon from './icons/addIcon.svg';
 import EventsIcon from './icons/eventsIcon.svg';
 import ProfileIcon from './icons/profileIcon.svg';
+import styles from './Navbar.styles';
 // ^._.^ 
 const Tab = createBottomTabNavigator();
 
 const MainTabs: React.FC = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
+      headerBackVisible: false, // evita il back icon
       tabBarIcon: ({ color, size }) => {
         if (route.name === 'Home') return <HomeIcon width={size} height={size} fill={color} />;
         if (route.name === 'Offerte') return <OffersIcon width={size} height={size} fill={color} />;
