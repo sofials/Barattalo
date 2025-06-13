@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './Home';
 import Offerte from './Offerte';
@@ -10,24 +11,39 @@ import OffersIcon from './icons/offersIcon.svg';
 import AddIcon from './icons/addIcon.svg';
 import EventsIcon from './icons/eventsIcon.svg';
 import ProfileIcon from './icons/profileIcon.svg';
+import CurrentPage from './icons/currentPage.svg';
 import styles from './Navbar.styles';
-// ^._.^ 
+
 const Tab = createBottomTabNavigator();
 
 const MainTabs: React.FC = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
-      headerBackVisible: false, // evita il back icon
-      tabBarIcon: ({ color, size }) => {
-        if (route.name === 'Home') return <HomeIcon width={size} height={size} fill={color} />;
-        if (route.name === 'Offerte') return <OffersIcon width={size} height={size} fill={color} />;
-        if (route.name === 'Aggiungi') return <AddIcon width={size} height={size} fill={color} />;
-        if (route.name === 'Eventi') return <EventsIcon width={size} height={size} fill={color} />;
-        if (route.name === 'Profilo') return <ProfileIcon width={size} height={size} fill={color} />;
-        return null;
+      headerBackVisible: false,
+      tabBarIcon: ({ color, size, focused }) => {
+        let IconComponent;
+        if (route.name === 'Home') IconComponent = HomeIcon;
+        else if (route.name === 'Offerte') IconComponent = OffersIcon;
+        else if (route.name === 'Aggiungi') IconComponent = AddIcon;
+        else if (route.name === 'Eventi') IconComponent = EventsIcon;
+        else if (route.name === 'Profilo') IconComponent = ProfileIcon;
+        else return null;
+
+        return (
+          <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
+            <IconComponent width={size} height={size} fill={color} />
+            {focused && (
+              <CurrentPage
+                width={size}
+                height={size}
+                style={StyleSheet.absoluteFill}
+              />
+            )}
+          </View>
+        );
       },
-      tabBarActiveTintColor: '#3cb371',
-      tabBarInactiveTintColor: 'gray',
+      tabBarActiveTintColor: '#6B53FF',
+      tabBarInactiveTintColor: 'black',
       headerShown: false,
     })}
   >
