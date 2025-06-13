@@ -20,10 +20,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   h1: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#222',
+    color: '#6B53FF',
   },
   h2: {
     fontSize: 20,
@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   doodle: {
-    marginTop: 16,
-    marginBottom: 16,
+    marginTop: 0,
+    marginBottom: -40,
   },
   searchInput: {
   width: '90%',
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
   fontSize: 16,
   marginBottom: 24,
   backgroundColor: '#fff',
+  marginTop: 40,
 },
 });
 
