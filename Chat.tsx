@@ -1,132 +1,201 @@
-import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import ArrowRight from './icons/arrowRight.svg';
+import CameraDoodle from './icons/books.svg';
 
-interface ChatItem {
-  id: string;
-  nome: string;
-  ultimoMessaggio: string;
-  avatar: string;
-  orario: string;
-  nonLetti: number;
-}
-
-const chatData: ChatItem[] = [
-  {
-    id: '1',
-    nome: 'Mario Rossi',
-    ultimoMessaggio: 'Ciao! Sei ancora interessato?',
-    avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-    orario: '12:30',
-    nonLetti: 2,
-  },
-  {
-    id: '2',
-    nome: 'Giulia Bianchi',
-    ultimoMessaggio: 'Grazie mille!',
-    avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
-    orario: '11:15',
-    nonLetti: 0,
-  },
-  // Aggiungi altre chat di esempio se vuoi
-];
+const gianniMessage = "Ciao, saresti disponibile per dare delle ripetizioni di italiano a mio figlio? Frequenta la terza media e ha un po’ di difficoltà.";
 
 const Chat: React.FC = () => {
-  const renderItem = ({ item }: { item: ChatItem }) => (
-    <TouchableOpacity style={styles.chatItem}>
-      <Image source={{ uri: item.avatar }} style={styles.avatar} />
-      <View style={styles.textContainer}>
-        <View style={styles.row}>
-          <Text style={styles.nome}>{item.nome}</Text>
-          <Text style={styles.orario}>{item.orario}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.ultimoMessaggio} numberOfLines={1}>
-            {item.ultimoMessaggio}
-          </Text>
-          {item.nonLetti > 0 && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{item.nonLetti}</Text>
-            </View>
-          )}
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
+  const navigation = useNavigation();
+  const [messages, setMessages] = useState([
+    { id: 1, text: gianniMessage, from: 'gianni' }
+  ]);
+  const [input, setInput] = useState('');
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  const sendMessage = () => {
+    if (input.trim() === '') return;
+    setMessages([...messages, { id: Date.now(), text: input, from: 'me' }]);
+    setInput('');
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+  };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={chatData}
-        keyExtractor={item => item.id}
-        renderItem={renderItem}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      {/* Barra superiore */}
+      <View style={styles.topBar}>
+        <View style={styles.left}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ArrowRight width={32} height={32} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Chat</Text>
+        </View>
+        <CameraDoodle width={40} height={40} />
+      </View>
+
+      {/* Info Gianni */}
+      <View style={styles.infoRow}>
+        <Image
+          source={require('./assets/gianni.png')}
+          style={styles.avatar}
+        />
+        <View style={{ marginLeft: 16 }}>
+          <Text style={styles.h1}>Gianni</Text>
+          <Text style={styles.sottotitolo}>
+            ti scrive per: <Text style={{ color: '#6B53FF', fontWeight: 'bold' }}>Ripetizioni di Italiano</Text>
+          </Text>
+        </View>
+      </View>
+
+      {/* Divider */}
+      <Image
+        source={require('./icons/divider.png')}
+        style={{ width: '100%', height: 16, marginBottom: 8 }}
+        resizeMode="contain"
       />
+
+      {/* Chat */}
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView
+          style={{ flex: 1, paddingHorizontal: 16 }}
+          contentContainerStyle={{ paddingVertical: 16 }}
+          ref={scrollViewRef}
+        >
+          {messages.map((msg, idx) =>
+            msg.from === 'gianni' ? (
+              <View key={msg.id}>
+                <View style={styles.baloonGianni}>
+                  <Text style={styles.textGianni}>{msg.text}</Text>
+                </View>
+                {/* Mostra il PNG solo sotto il primo messaggio di Gianni */}
+                {idx === 0 && (
+                  <Image
+                    source={require('./icons/reserving.png')}
+                    resizeMode="cover"
+                  />
+                )}
+              </View>
+            ) : (
+              <View key={msg.id} style={styles.baloonMe}>
+                <Text style={styles.textMe}>{msg.text}</Text>
+              </View>
+            )
+          )}
+        </ScrollView>
+
+        {/* Input per inviare messaggi */}
+        <View style={styles.inputRow}>
+          <TextInput
+            style={styles.input}
+            placeholder="Scrivi un messaggio..."
+            value={input}
+            onChangeText={setInput}
+            placeholderTextColor="#aaa"
+          />
+          <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Invia</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  chatItem: {
+  topBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 40,
+    paddingBottom: 16,
     backgroundColor: '#fff',
+  },
+  left: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginLeft: 16,
+    color: '#6B53FF',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 24,
   },
   avatar: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    marginRight: 16,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: '#eee',
   },
-  textContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  nome: {
-    fontSize: 16,
+  h1: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#222',
+    color: '#6B53FF',
   },
-  orario: {
-    fontSize: 12,
-    color: '#888',
-    marginLeft: 8,
-  },
-  ultimoMessaggio: {
-    fontSize: 14,
+  sottotitolo: {
+    fontSize: 15,
     color: '#555',
-    flex: 1,
     marginTop: 4,
   },
-  badge: {
-    backgroundColor: '#3cb371',
-    borderRadius: 12,
-    minWidth: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 8,
-    paddingHorizontal: 6,
+  baloonGianni: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFF4F4',
+    borderRadius: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    marginBottom: 10,
+    maxWidth: '80%',
   },
-  badgeText: {
+  textGianni: {
+    color: '#222',
+    fontSize: 16,
+  },
+  baloonMe: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#689399',
+    borderRadius: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    marginBottom: 10,
+    maxWidth: '80%',
+  },
+  textMe: {
     color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 13,
+    fontSize: 16,
   },
-  separator: {
-    height: 1,
-    backgroundColor: '#eee',
-    marginLeft: 86,
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderTopWidth: 1,
+    borderColor: '#eee',
+    backgroundColor: '#fff',
+    marginBottom: 60,
+  },
+  input: {
+    flex: 1,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 16,
+    fontSize: 16,
+    marginRight: 8,
+    color: '#222',
+  },
+  sendButton: {
+    backgroundColor: '#6B53FF',
+    borderRadius: 22,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
   },
 });
 
