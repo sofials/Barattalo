@@ -1,5 +1,7 @@
 import React from 'react';
-import eliio from '.images/elio.jpg'
+import { View } from 'react-native';
+import Elio from './assets/elio.svg';
+
 const reviews = [
   {
     name: 'Simone ',
@@ -26,17 +28,9 @@ const Profilo: React.FC = () => {
     
       {/* AVATAR E NOME */}
       <div style={{ textAlign: 'center', marginTop: 20 }}>
-        <img
-          src={elio}
-          alt="Elio"
-          style={{
-            width: 120,
-            height: 120,
-            borderRadius: '50%',
-            border: '2px solid #a678f4',
-            objectFit: 'cover',
-          }}
-        />
+        <View>
+          <Elio width={120} height={120} />
+        </View>
         <div
           style={{
             marginTop: 10,
