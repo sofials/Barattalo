@@ -200,10 +200,10 @@ const styles = StyleSheet.create({
     color: '#444',
   },
   reviewAnnuncio: {
-  fontSize: 12,
-  color: '#777',
-  marginLeft: 4,
-},
+    fontSize: 12,
+    color: '#777',
+    marginLeft: 4,
+  },
 });
 
 export default Profilo;

@@ -1,54 +1,78 @@
-import React from 'react';
-import './Eventi.css';
+import React, { useState } from 'react';
+import { View, Text, Image, ScrollView, TextInput } from 'react-native';
+import styles from './Eventi.styles';
+import BooksIcon from './icons/books.svg';
+import Girl01 from './icons/girl01.svg';
 
-const sezioni = [
+const eventi = [
   {
-    titolo: '📚 Libri e Lettura',
-    eventi: [
-      { titolo: 'Shakespeare in Love', immagine: require('./images/The_Complete_Plays_In_One_Sitting.webp') },
-      { titolo: 'Letture per Giovani', immagine: require('./images/download.jpg') },
-      { titolo: 'Horror in Prima Linea', immagine: require('./images/download-1.jpg') },
-    ],
+    id: 1,
+    titolo: 'Portici di Carta',
+    immagine: require('./assets/portici.jpg'),
+    descrizione: 'Vieni a scoprire una montagna di libri sotto i portici di Torino!',
   },
   {
-    titolo: '🍷 Degustazioni',
-    eventi: [
-      { titolo: 'Birre Venete Artigianali', immagine: require('./images/download-2.jpg') },
-      { titolo: 'Formaggi di Capra', immagine: require('./images/images.jpg') },
-      { titolo: 'Grappa per Tutti!', immagine: require('./images/images-1.jpg') },
-    ],
+    id: 2,
+    titolo: 'La Notte si Riempie di Stelle',
+    immagine: require('./assets/cinema.png'),
+    descrizione: 'Il Museo Nazionale del Cinema di Torino apre le porte per una notte speciale.',
   },
   {
-    titolo: '🎬 Film e Cinema',
-    eventi: [
-      { titolo: 'Western', immagine: require('./images/images-2.jpg') },
-      { titolo: 'Dario Argento', immagine: require('./images/download-4.jpg') },
-      { titolo: 'Cuori Bollenti', immagine: require('./images/download-5.jpg') },
-    ],
+    id: 3,
+    titolo: 'Degustazione di vini',
+    immagine: require('./assets/vino.jpg'),
+    descrizione: 'Vieni a scoprire i migliori vini piemontesi in una serata di degustazione esclusiva.',
   },
 ];
 
-const Eventi: React.FC = () => {
+const Eventi = () => {
+  const [search, setSearch] = useState('');
+
+  const eventiFiltrati = eventi.filter(e =>
+    e.titolo.toLowerCase().includes(search.toLowerCase()) ||
+    e.descrizione.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <main className="eventi-container">
-      {sezioni.map((sezione, idx) => (
-        <section key={idx} className="evento-sezione">
-          <h2>{sezione.titolo}</h2>
-          <ul className="lista-eventi">
-            {sezione.eventi.map((evento, i) => (
-              <li key={i} className="evento-item">
-                <img
-                  src={evento.immagine}
-                  alt={evento.titolo}
-                  className="evento-img"
-                />
-                <span className="evento-testo">{evento.titolo}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-    </main>
+    <View style={{ flex: 1, backgroundColor: '#f9f9f9' }}>
+      {/* TopBar più in basso */}
+      <View style={styles.topBar}>
+        <BooksIcon width={40} height={40} />
+        <Text style={styles.titolo}>Eventi</Text>
+      </View>
+
+      {/* Barra di ricerca subito dopo la topBar */}
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Cerca un evento..."
+        value={search}
+        onChangeText={setSearch}
+        placeholderTextColor="#222"
+      />
+
+      <ScrollView style={styles.eventiContainer} contentContainerStyle={{ paddingBottom: 100 }}>
+        <View style={styles.eventoSezione}>
+          {/* Sottotitolo più grande */}
+          <Text style={styles.sottotitolo}>Potrebbero interessarti:</Text>
+          {eventiFiltrati.map(evento => (
+            <View key={evento.id} style={styles.eventoItem}>
+              <Image
+                source={evento.immagine}
+                style={styles.eventoImg}
+                resizeMode="cover"
+              />
+              <View style={styles.eventoContent}>
+                <Text style={styles.eventoTesto}>{evento.titolo}</Text>
+                <Text style={styles.eventoDescrizione}>{evento.descrizione}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+
+      {/* Icona in basso a destra */}
+      <Girl01 width={80} height={80} style={styles.girlIcon} />
+    </View>
   );
 };
 
