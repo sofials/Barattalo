@@ -34,7 +34,7 @@ const Profilo: React.FC = () => {
         <View style={styles.centered}>
           <Image source={require('./images/elio.jpg')} style={styles.avatar} />
           <View style={styles.pointsBox}>
-            <Text style={styles.pointsText}>700pt</Text>
+            <Text style={styles.pointsText}>Elio 700pt</Text>
           </View>
         </View>
 
