@@ -1,177 +1,209 @@
 import React from 'react';
-import { View } from 'react-native';
-import Elio from './assets/elio.svg';
+import { View, Text, StyleSheet, Image, ScrollView, FlatList } from 'react-native';
 
 const reviews = [
   {
-    name: 'Simone ',
-    image: 'elio.jpeg',
+    name: 'Simone',
+    image: require('./images/marco.jpeg'),
     stars: 5,
-    description: 'Dario è un insegnante fantastico! Le sue lezioni sono sempre interessanti e coinvolgenti.',
+    annuncio: 'Ripetizioni di italiano',
+    description: 'Elio è un insegnante fantastico! Le sue lezioni sono sempre interessanti e coinvolgenti.',
   },
-  
-  // Puoi aggiungerne altre qui
+  {
+    name: 'Giulia', 
+    image: require('./images/giulia.jpeg'),
+    stars: 5,
+    annuncio: 'Ripetizioni di italiano',
+    description: 'Molto paziente e disponibile, ho imparato tanto grazie a lui!',
+  },
+  {
+    name: 'Marco',
+    image: require('./images/simone.jpeg'),
+    stars: 5,
+    annuncio: 'Ripetizioni di italiano',
+    description: 'Elio ha una grande passione per l\'insegnamento, lo consiglio vivamente!',
+  },
 ];
 
 const Profilo: React.FC = () => {
   return (
-    <div
-      style={{
-        width: '100%',
-        maxWidth: 500,
-        margin: '0 auto',
-        padding: 16,
-        fontFamily: 'sans-serif',
-        boxSizing: 'border-box',
-      }}
-    >
-    
-      {/* AVATAR E NOME */}
-      <div style={{ textAlign: 'center', marginTop: 20 }}>
-        <View>
-          <Elio width={120} height={120} />
+    <View style={styles.wrapper}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+
+        {/* AVATAR E NOME */}
+        <View style={styles.centered}>
+          <Image source={require('./images/elio.jpg')} style={styles.avatar} />
+          <View style={styles.pointsBox}>
+            <Text style={styles.pointsText}>700pt</Text>
+          </View>
         </View>
-        <div
-          style={{
-            marginTop: 10,
-            padding: '6px 12px',
-            backgroundColor: '#efd7cd',
-            borderRadius: 8,
-            display: 'inline-block',
-            fontWeight: 600,
-            color: '#333',
-          }}
-        >
-          700pt
-        </div>
-      </div>
 
-      {/* BIOGRAFIA */}
-      <div style={{ backgroundColor: '#f0e9e3', padding: 12, borderRadius: 8, marginTop: 20 }}>
-        <strong style={{ color: '#9e938a' }}>Biografia</strong>
-        <p style={{ marginTop: 6 }}>
-          Ciao sono Elio! Sono un ex insegnante in pensione,amo leggere,amo raccontare storie e amo vivere la vita! Se hai bisogno di aiuto chiedi pure!
-        </p>
-      </div>
+        {/* BIOGRAFIA */}
+        <View style={styles.box}>
+          <Text style={styles.sectionTitle}>Biografia</Text>
+          <Text style={styles.description}>
+            Ciao sono Elio! Sono un ex insegnante in pensione, amo leggere, amo raccontare storie e amo vivere la vita! Se hai bisogno di aiuto chiedi pure!
+          </Text>
+        </View>
 
-      {/* ANNUNCI */}
-      <div style={{ backgroundColor: '#f0e9e3', padding: 12, borderRadius: 8, marginTop: 20 }}>
-        <strong style={{ color: '#9e938a' }}>I miei annunci</strong>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, flexWrap: 'wrap' }}>
-          {[
-            { nome: 'Ripetizioni di italiano', img: '📘' },
-            
-          ].map((item, idx) => (
-            <div key={idx} style={{ textAlign: 'center', fontSize: 12, width: '30%' }}>
-              <div
-                style={{
-                  width: 60,
-                  height: 60,
-                  backgroundColor: '#fff',
-                  border: '1px solid #ccc',
-                  borderRadius: 8,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 4px',
-                  fontSize: 24,
-                }}
-              >
-                {item.img}
-              </div>
-              {item.nome}
-            </div>
-          ))}
-        </div>
-      </div>
+        {/* ANNUNCI */}
+        <View style={styles.box}>
+          <Text style={styles.sectionTitle}>I miei annunci</Text>
+          <View style={styles.annunciRow}>
+            <View style={styles.annuncio}>
+              <View style={styles.annuncioIcon}><Text style={styles.annuncioEmoji}>📘</Text></View>
+              <Text style={styles.annuncioText}>Ripetizioni di italiano</Text>
+            </View>
+          </View>
+        </View>
 
-      {/* RECENSIONI scrollabili */}
-<div
-  style={{
+        {/* RECENSIONI */}
+        <View style={[styles.box, { maxHeight: 350 }]}>
+          <Text style={[styles.sectionTitle, { textAlign: 'center' }]}>Recensioni</Text>
+          <Text style={styles.ratingValue}>5</Text>
+          <Text style={styles.stars}>★ ★ ★ ★ ★</Text>
+
+          <FlatList
+            data={reviews}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.reviewCard}>
+                <Image source={item.image} style={styles.reviewImage} />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.reviewName}>{item.name}</Text>
+                  <Text style={styles.reviewAnnuncio}> • {item.annuncio}</Text>
+                  <Text style={styles.reviewStars}>
+                    {'★'.repeat(item.stars)}{'☆'.repeat(5 - item.stars)}
+                  </Text>
+                  <Text style={styles.reviewDescription}>{item.description}</Text>
+                </View>
+              </View>
+            )}
+          />
+        </View>
+
+      </ScrollView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollContent: {
+    padding: 16,
+  },
+  centered: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+  },
+  pointsBox: {
+    marginTop: 10,
+    backgroundColor: '#efd7cd',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  pointsText: {
+    fontWeight: '600',
+    color: '#333',
+  },
+  box: {
     backgroundColor: '#f0e9e3',
     padding: 12,
     borderRadius: 8,
     marginTop: 20,
-    maxHeight: 350, // altezza massima della sezione scrollabile
-    overflowY: 'auto',
-  }}
->
-  {/* Header con media voto */}
-  <div
-    style={{
-      textAlign: 'center',
-      marginBottom: 16,
-    }}
-  >
-    <strong style={{ color: '#9e938a' }}>Recensioni</strong>
-    <div style={{ fontSize: 28, fontWeight: 'bold', margin: '8px 0' }}>5</div>
-    <div style={{ color: '#f5b301', fontSize: 20 }}>
-      ★ ★ ★ ★ ★
-    </div>
-  </div>
-
-  {/* Lista recensioni */}
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-    {reviews.map((review, idx) => (
-      <div
-        key={idx}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: '#fff',
-          padding: 8,
-          borderRadius: 10,
-          border: '1px solid #d4c8ff',
-        }}
-      >
-        <img
-          src={review.image}
-          alt={review.name}
-          style={{
-            width: 60,
-            height: 60,
-            borderRadius: 8,
-            marginRight: 12,
-            objectFit: 'cover',
-          }}
-        />
-        <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 'bold', fontSize: 14 }}>{review.name}</div>
-          <div style={{ fontSize: 18, color: '#f5b301' }}>
-            {'★'.repeat(review.stars)}
-            {'☆'.repeat(5 - review.stars)}
-          </div>
-          <p style={{ marginTop: 4, fontSize: 14, color: '#444' }}>
-    {review.description}
-  </p>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-      {/* MENU FISSO IN BASSO */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          maxWidth: 500,
-          backgroundColor: '#fff',
-          borderTop: '1px solid #ccc',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '12px 0',
-        }}
-      >
-        <span>🏠</span>
-        <span>👥</span>
-        <span style={{ fontSize: 20 }}>＋</span>
-        <span>🔔</span>
-        <span style={{ backgroundColor: '#d6c1f4', padding: 8, borderRadius: '50%' }}>👤</span>
-      </div>
-    </div>
-  );
-};
+  },
+  sectionTitle: {
+    color: '#9e938a',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  description: {
+    marginTop: 6,
+    color: '#333',
+    fontSize: 14,
+  },
+  annunciRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    flexWrap: 'wrap',
+  },
+  annuncio: {
+    width: '30%',
+    alignItems: 'center',
+  },
+  annuncioIcon: {
+    width: 60,
+    height: 60,
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  annuncioEmoji: {
+    fontSize: 24,
+  },
+  annuncioText: {
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  ratingValue: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginVertical: 8,
+    textAlign: 'center',
+  },
+  stars: {
+    fontSize: 20,
+    color: '#f5b301',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  reviewCard: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    padding: 8,
+    borderRadius: 10,
+    borderColor: '#d4c8ff',
+    borderWidth: 1,
+    marginBottom: 12,
+  },
+  reviewImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  reviewName: {
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  reviewStars: {
+    fontSize: 18,
+    color: '#f5b301',
+  },
+  reviewDescription: {
+    marginTop: 4,
+    fontSize: 14,
+    color: '#444',
+  },
+  reviewAnnuncio: {
+  fontSize: 12,
+  color: '#777',
+  marginLeft: 4,
+},
+});
 
 export default Profilo;
