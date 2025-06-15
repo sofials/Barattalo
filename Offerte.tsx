@@ -25,14 +25,14 @@ const Offerte: React.FC = () => {
   const [showFiltri, setShowFiltri] = useState(false);
   const [annuncioSelezionato, setAnnuncioSelezionato] = useState<Annuncio | null>(null);
 
-  // Calcolo filtrati una volta sola
-  const filteredAnnunci = annunci.filter(a => {
-    if (a.isNew) return false;
-    if (filtroCategorie.length > 0 && !filtroCategorie.includes(a.categoria)) return false;
-    if (!a.titolo.toLowerCase().includes(search.toLowerCase())) return false;
-    if (a.km !== undefined && a.km > filtroDistanza) return false;
-    return true;
-  });
+  const filteredAnnunci = () =>
+    annunci.filter(a => {
+      if (a.isNew) return false;
+      if (filtroCategorie.length > 0 && !filtroCategorie.includes(a.categoria)) return false;
+      if (!a.titolo.toLowerCase().includes(search.toLowerCase())) return false;
+      if (a.km !== undefined && a.km > filtroDistanza) return false;
+      return true;
+    });
 
   const categorieDaMostrare = filtroCategorie.length > 0 ? filtroCategorie : categories;
 
@@ -50,7 +50,7 @@ const Offerte: React.FC = () => {
       {/* Header fisso con titolo e barra ricerca */}
       <View style={styles.headerFixed}>
         <View style={styles.titoloWrapper}>
-          <CameraDoodle width={32} height={32} style={styles.titoloIcona} />
+          <CameraDoodle width={40} height={40} />
           <Text style={styles.titoloTesto}>Annunci</Text>
         </View>
 
@@ -58,7 +58,7 @@ const Offerte: React.FC = () => {
           <View style={[styles.searchBox, { width: Math.min(340, screenWidth * 0.9) }]}>
             <View style={styles.searchContainer}>
               <TextInput
-                placeholder="Cerca annunci..."
+                placeholder="Cerca..."
                 placeholderTextColor="#333"
                 value={search}
                 onChangeText={setSearch}
@@ -72,7 +72,6 @@ const Offerte: React.FC = () => {
               >
                 <Text style={styles.filterButtonText}>Filtri</Text>
               </TouchableOpacity>
-              {/* Rimosso icona extra qui */}
             </View>
           </View>
         </View>
@@ -81,10 +80,10 @@ const Offerte: React.FC = () => {
       {/* Lista annunci */}
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{ paddingBottom: 100, paddingTop: 180 }}
+        contentContainerStyle={{ paddingBottom: 100, paddingTop: 220 }}
       >
         {categorieDaMostrare.map(categoria => {
-          const filtered = filteredAnnunci.filter(a => a.categoria === categoria);
+          const filtered = filteredAnnunci().filter(a => a.categoria === categoria);
           if (filtered.length === 0) return null;
 
           return (
@@ -94,10 +93,10 @@ const Offerte: React.FC = () => {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.cardList}
+                style={{ height: 180 }}  // Altezza fissa per contenitore ScrollView orizzontale
               >
                 {filtered.map((a, i) => {
-                  // Controllo immagine default più robusto: se a.immagine non esiste o è null
-                  const isDefaultImage = !a.immagine;
+                  const isDefaultImage = a.immagine === immagineDefault;
                   return (
                     <TouchableOpacity
                       key={i}

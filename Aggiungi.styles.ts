@@ -7,15 +7,16 @@ export default StyleSheet.create({
   },
 
   header: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#2B31BA',
-    marginBottom: 24,
-    alignSelf: 'center',
+    color: '#6B53FF',
+    lineHeight: 28,
+      marginTop: 21,
+    // Rimosso marginBottom e alignSelf per evitare disallineamenti nella riga
   },
 
   formWrapper: {
-    backgroundColor: '#d8d1ff',
+    backgroundColor: '#e4dbff',
     borderRadius: 10,
     padding: 16,
     marginBottom: 16,
@@ -28,7 +29,7 @@ export default StyleSheet.create({
   },
 
   labelRow: {
-    width: 100, // larghezza fissa per evitare il capo
+    width: 100,
     paddingTop: 12,
   },
 
@@ -44,8 +45,6 @@ export default StyleSheet.create({
   },
 
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 6,
     padding: 12,
     fontSize: 16,
@@ -53,20 +52,19 @@ export default StyleSheet.create({
   },
 
   pickerWrapper: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#6B53FF',
     borderRadius: 6,
     overflow: 'hidden',
     backgroundColor: '#fff',
   },
 
-  picker: {
-    height: 50,
-    width: '100%',
-  },
+picker: {
+  minHeight: 50,      // altezza minima
+  width: '100%',
+},
 
   button: {
-    backgroundColor: '#d8d1ff',
+    backgroundColor: '#e4dbff',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',

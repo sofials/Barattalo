@@ -27,21 +27,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  // Ho ridotto dimensioni da 80x80 a 24x24 per coerenza con JSX
-  titoloIcona: {
-    marginRight: 8,
-    width: 24,
-    height: 24,
-  },
+
   titoloTesto: {
     fontWeight: 'bold',
     color: '#6B53FF',
     fontSize: 26,
+    marginLeft: 12,
+    lineHeight: 32,
+    marginTop: 20,
   },
 
   searchWrapper: {
     alignItems: 'center',
   },
+
   searchBox: {
     width: '100%',
     maxWidth: 340,
@@ -54,10 +53,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
+
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+
   searchInput: {
     flex: 1,
     height: 42,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     color: '#000',
     backgroundColor: '#fff',
-    fontWeight: 'bold',
+    fontWeight: 'normal',
   },
 
   filterButton: {
@@ -77,6 +78,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 8,
   },
+
   filterButtonText: {
     color: '#2B31BA',
     fontWeight: 'bold',
@@ -90,46 +92,52 @@ const styles = StyleSheet.create({
   categoria: {
     marginBottom: 24,
   },
+
   categoriaTitolo: {
     fontWeight: 'bold',
     fontSize: 18,
-    color: '#4A4A4A',
+    color: '#2B31BA',
     marginBottom: 12,
   },
 
   cardList: {
     paddingLeft: 4,
+    alignItems: 'center', // centrare verticalmente le card nello ScrollView orizzontale
   },
 
   card: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
+    width: 140,
+    height: 160,
     marginRight: 12,
+    borderRadius: 12,
+    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
-    width: 140,
+    overflow: 'hidden',
   },
 
   cardImage: {
     width: '100%',
-    height: 100,
-    borderRadius: 10,
+    height: 120,
+    borderRadius: 12,
     marginBottom: 8,
   },
+
   cardImageDefault: {
     width: '100%',
-    height: 80,
-    borderRadius: 10,
+    height: 120,
+    borderRadius: 12,
     marginBottom: 8,
   },
 
   cardTitle: {
     fontWeight: 'bold',
     color: '#333',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 

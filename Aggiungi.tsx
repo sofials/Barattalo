@@ -12,6 +12,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import { useAnnunci, categories } from './AnnunciContext';
 import styles from './Aggiungi.styles';
+import CameraDoodle from './icons/books.svg';
 
 const Aggiungi: React.FC = () => {
   const { aggiungiAnnuncio } = useAnnunci();
@@ -19,7 +20,7 @@ const Aggiungi: React.FC = () => {
   const [titolo, setTitolo] = useState('');
   const [descrizione, setDescrizione] = useState('');
   const [categoria, setCategoria] = useState(categories[0] || '');
-  const [puntiAnnuncio, setPuntiAnnuncio] = useState<number>(30); // default coerente
+  const [puntiAnnuncio, setPuntiAnnuncio] = useState<number>(30);
 
   const handleSubmit = () => {
     if (!titolo.trim()) {
@@ -71,13 +72,16 @@ const Aggiungi: React.FC = () => {
       style={{ flex: 1 }}
     >
       <ScrollView contentContainerStyle={[styles.container, { paddingTop: 40, flexGrow: 1 }]}>
-        <Text style={styles.header}>Inserisci annuncio</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
+          <CameraDoodle width={40} height={40} />
+          <Text style={[styles.header, { marginLeft: 10 }]}>Inserisci annuncio</Text>
+        </View>
 
         <View style={styles.formWrapper}>
           {/* Titolo */}
           <View style={styles.row}>
             <View style={styles.labelRow}>
-              <Text style={styles.label}>Titolo:</Text>
+              <Text style={styles.label}>Titolo</Text>
             </View>
             <View style={styles.inputRow}>
               <TextInput
@@ -92,7 +96,7 @@ const Aggiungi: React.FC = () => {
           {/* Descrizione */}
           <View style={styles.row}>
             <View style={styles.labelRow}>
-              <Text style={styles.label}>Descrizione:</Text>
+              <Text style={styles.label}>Descrizione</Text>
             </View>
             <View style={styles.inputRow}>
               <TextInput
@@ -108,7 +112,7 @@ const Aggiungi: React.FC = () => {
           {/* Categoria */}
           <View style={styles.row}>
             <View style={styles.labelRow}>
-              <Text style={styles.label}>Categoria:</Text>
+              <Text style={styles.label}>Categoria</Text>
             </View>
             <View style={styles.inputRow}>
               <View style={styles.pickerWrapper}>
@@ -128,7 +132,7 @@ const Aggiungi: React.FC = () => {
           {/* Punti */}
           <View style={styles.row}>
             <View style={styles.labelRow}>
-              <Text style={styles.label}>Punti:</Text>
+              <Text style={styles.label}>Punti</Text>
             </View>
             <View style={styles.inputRow}>
               <TextInput
