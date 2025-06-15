@@ -1,6 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Modal, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
 import BlueIdea from './icons/blueIdea.svg';
+import { useAnnunci } from './AnnunciContext'; // Assumo ci sia questo hook
+
+type Annuncio = {
+  titolo: string;
+  descrizione: string;
+  categoria: string;
+  puntiAnnuncio: number;
+  disponibilita?: string;
+};
 
 const reviews = [
   {
@@ -30,14 +47,8 @@ const averageRating = (
   reviews.reduce((sum, review) => sum + review.stars, 0) / reviews.length
 ).toFixed(1);
 
-type Annuncio = {
-  nome: string;
-  descrizione: string;
-  punti: number;
-  disponibilita: string;
-};
-
-const Profilo = () => {
+const Profilo: React.FC = () => {
+  const { annunci } = useAnnunci(); // Prendo gli annunci dal contesto
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedAnnuncio, setSelectedAnnuncio] = useState<Annuncio | null>(null);
 
@@ -63,30 +74,27 @@ const Profilo = () => {
 
         <View style={styles.box}>
           <Text style={styles.sectionTitle}>Annunci</Text>
-          <View style={styles.annunciRow}>
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedAnnuncio({
-                  nome: 'Ripetizioni di italiano',
-                  descrizione: 'Lezioni di italiano per tutti i livelli. Online o in presenza.',
-                  punti: 50,
-                  disponibilita: 'Lunedì - Venerdì dalle 15:00 alle 18:00'
-                });
-                setModalVisible(true);
-              }}
-            >
-              <View style={styles.annuncioCard}>
-                <Image
-                  source={require('./icons/italiano.png')}
-                  style={styles.annuncioCardImg}
-                  resizeMode="cover"
-                />
-                <View style={styles.annuncioCardTextBox}>
-                  <Text style={styles.annuncioCardText}>Ripetizioni di italiano</Text>
+          <ScrollView horizontal style={styles.annunciRow} showsHorizontalScrollIndicator={false}>
+            {annunci.length === 0 && (
+              <Text style={{ color: '#999' }}>Nessun annuncio disponibile</Text>
+            )}
+            {annunci.map((annuncio, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setSelectedAnnuncio(annuncio);
+                  setModalVisible(true);
+                }}
+              >
+                <View style={styles.annuncioCard}>
+                  {/* Qui puoi mettere un'icona o immagine generica */}
+                  <View style={styles.annuncioCardPlaceholder}>
+                    <Text style={styles.annuncioCardText}>{annuncio.titolo}</Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
 
         <View style={styles.box}>
@@ -106,7 +114,7 @@ const Profilo = () => {
         </View>
       </ScrollView>
 
-      {/* Modal per dettagli annuncio */}
+      {/* Modal dettagli annuncio */}
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -119,13 +127,19 @@ const Profilo = () => {
               <Text style={styles.modalCloseIconText}>✕</Text>
             </TouchableOpacity>
 
-            <Text style={styles.modalTitle}>{selectedAnnuncio?.nome}</Text>
+            <Text style={styles.modalTitle}>{selectedAnnuncio?.titolo}</Text>
             <Text style={styles.modalLabel}>Descrizione</Text>
             <Text style={styles.modalText}>{selectedAnnuncio?.descrizione}</Text>
+            <Text style={styles.modalLabel}>Categoria</Text>
+            <Text style={styles.modalText}>{selectedAnnuncio?.categoria}</Text>
             <Text style={styles.modalLabel}>Punti necessari</Text>
-            <Text style={styles.modalText}>{selectedAnnuncio?.punti} pt</Text>
-            <Text style={styles.modalLabel}>Disponibilità</Text>
-            <Text style={styles.modalText}>{selectedAnnuncio?.disponibilita}</Text>
+            <Text style={styles.modalText}>{selectedAnnuncio?.puntiAnnuncio} pt</Text>
+            {selectedAnnuncio?.disponibilita && (
+              <>
+                <Text style={styles.modalLabel}>Disponibilità</Text>
+                <Text style={styles.modalText}>{selectedAnnuncio.disponibilita}</Text>
+              </>
+            )}
           </View>
         </View>
       </Modal>
@@ -195,139 +209,98 @@ const styles = StyleSheet.create({
   },
   annunciRow: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     marginTop: 12,
   },
   annuncioCard: {
-    width: 120,
-    height: 120,
+    width: 140,
+    height: 140,
     borderRadius: 11,
-    overflow: 'hidden',
     backgroundColor: '#D8D1FF',
     marginRight: 12,
-    elevation: 2,
-    shadowColor: '#2B31BA',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    alignItems: 'center',
-  },
-  annuncioCardImg: {
-    width: '100%',
-    height: 75,
-  },
-  annuncioCardTextBox: {
-    backgroundColor: '#FFF',
-    width: '100%',
-    flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  annuncioCardPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   annuncioCardText: {
-    fontSize: 13,
     color: '#2B31BA',
     fontWeight: 'bold',
     textAlign: 'center',
   },
   ratingAverage: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#2B31BA',
     marginBottom: 12,
+    color: '#2B31BA',
   },
   reviewCard: {
     flexDirection: 'row',
-    backgroundColor: '#FFF',
-    padding: 10,
-    borderRadius: 10,
-    borderColor: '#D8D1FF',
-    borderWidth: 1,
-    marginBottom: 10,
+    marginBottom: 16,
+    backgroundColor: '#F0F0F0',
+    padding: 12,
+    borderRadius: 8,
   },
   reviewImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    marginRight: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 12,
   },
   reviewName: {
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 16,
     color: '#2B31BA',
   },
   reviewStars: {
-    fontSize: 14,
-    color: '#F5B301',
+    color: '#FFD700',
   },
   reviewAnnuncio: {
-    fontSize: 12,
-    color: '#777',
-    marginTop: 2,
+    fontStyle: 'italic',
+    color: '#555',
   },
   reviewDescription: {
-    fontSize: 13,
-    color: '#444',
-    marginTop: 4,
-  },
-  // Modal styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '85%',
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 20,
-    elevation: 5,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2B31BA',
-    marginBottom: 12,
-  },
-  modalLabel: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#555',
-    marginTop: 10,
-  },
-  modalText: {
-    fontSize: 14,
-    color: '#333',
-    marginTop: 4,
-  },
-  modalCloseButton: {
-    marginTop: 20,
-    backgroundColor: '#2B31BA',
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  modalCloseText: {
-    color: '#FFF',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  modalCloseIcon: {
-  position: 'absolute',
-  top: 10,
-  right: 10,
-  backgroundColor: '#2B31BA',
-  borderRadius: 20,
-  width: 30,
-  height: 30,
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 1,
+   
+color: '#333',
+},
+modalOverlay: {
+flex: 1,
+backgroundColor: '#000000AA',
+justifyContent: 'center',
+padding: 20,
+},
+modalContent: {
+backgroundColor: '#FFF',
+padding: 24,
+borderRadius: 16,
+},
+modalCloseIcon: {
+position: 'absolute',
+right: 12,
+top: 12,
 },
 modalCloseIconText: {
-  color: '#FFF',
-  fontSize: 18,
-  fontWeight: 'bold',
+fontSize: 20,
+color: '#2B31BA',
+},
+modalTitle: {
+fontSize: 20,
+fontWeight: 'bold',
+color: '#2B31BA',
+marginBottom: 12,
+},
+modalLabel: {
+fontWeight: '600',
+marginTop: 8,
+color: '#555',
+},
+modalText: {
+fontSize: 14,
+color: '#333',
 },
 });
 
-export default Profilo;//
+export default Profilo;
