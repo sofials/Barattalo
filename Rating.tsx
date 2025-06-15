@@ -27,7 +27,7 @@ const Rating: React.FC = () => {
       {/* Info Giulia */}
       <View style={styles.infoRow}>
         <Image
-          source={require('./assets/giulia.png')}
+          source={require('./assets/giulia.jpg')}
           style={styles.avatar}
         />
         <View style={{ marginLeft: 16 }}>
@@ -48,6 +48,7 @@ const Rating: React.FC = () => {
       {/* Sezione stelle */}
       <View style={{ paddingHorizontal: 24, marginTop: 16 }}>
         <Text style={styles.h2}>Quante stelle daresti all'Aiuto?</Text>
+        <Text style={styles.paragrafo}>Scrivi la tua recensione qui sotto</Text>
         <View style={{ flexDirection: 'row', marginVertical: 16 }}>
           {[1, 2, 3, 4, 5].map((num) => (
             <TouchableOpacity key={num} onPress={() => setRating(num)} activeOpacity={0.7}>
@@ -136,6 +137,11 @@ const styles = StyleSheet.create({
     color: '#555',
     marginBottom: 8,
     marginTop: 16,
+  },
+  paragrafo: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 8,
   },
   textArea: {
     backgroundColor: '#F5F5F5',
