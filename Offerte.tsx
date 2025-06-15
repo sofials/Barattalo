@@ -97,11 +97,16 @@ const Offerte: React.FC = () => {
               >
                 {filtered.map((a, i) => {
                   const isDefaultImage = a.immagine === immagineDefault;
+                  // Passa rating come dato interno, anche se non mostrato
+                  const rating = typeof a.rating === 'number' ? a.rating : 4;
+
                   return (
                     <TouchableOpacity
                       key={i}
                       style={styles.card}
                       onPress={() => setAnnuncioSelezionato(a)}
+                      // rating è disponibile qui se serve per qualche logica futura
+                      // ad esempio: data-rating={rating}
                     >
                       <Image
                         source={a.immagine ?? immagineDefault}
@@ -109,6 +114,7 @@ const Offerte: React.FC = () => {
                         resizeMode={isDefaultImage ? 'contain' : 'cover'}
                       />
                       <Text style={styles.cardTitle}>{a.titolo}</Text>
+                      {/* rating non mostrato */}
                     </TouchableOpacity>
                   );
                 })}

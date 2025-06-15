@@ -9,6 +9,7 @@ export type Annuncio = {
   km?: number;
   puntiAnnuncio: number;
   isNew?: boolean;
+  rating?: number;
 };
 
 export type AnnuncioContextType = {
@@ -36,7 +37,15 @@ const setIsNewFalse = (annunci: Annuncio[]): Annuncio[] => {
   }));
 };
 
-const annunciDefault: Annuncio[] = setIsNewFalse([
+// Helper per impostare rating di default a 4 negli annunci
+const setDefaultRating = (annunci: Annuncio[]): Annuncio[] => {
+  return annunci.map(a => ({
+    ...a,
+    rating: typeof a.rating === 'number' && a.rating >= 0 ? a.rating : 4,
+  }));
+};
+
+const annunciDefault: Annuncio[] = setDefaultRating(setIsNewFalse([
   {
     titolo: 'Ripetizioni di fisica',
     categoria: 'Apprendimento',
@@ -109,7 +118,7 @@ const annunciDefault: Annuncio[] = setIsNewFalse([
     descrizione: 'Realizza decorazioni artigianali fatte a mano per rendere ogni ambiente speciale.',
     puntiAnnuncio: 30,
   },
-]);
+]));
 
 const AnnuncioContext = createContext<AnnuncioContextType | undefined>(undefined);
 
@@ -121,7 +130,8 @@ export const AnnuncioProvider = ({ children }: { children: ReactNode }) => {
       ...a,
       km: a.km ?? 10,
       immagine: a.immagine ?? immagineDefault,
-      isNew: a.isNew ?? true, // nuovi annunci di default isNew: true
+      isNew: a.isNew ?? true, // nuovi annunci di default
+      rating: typeof a.rating === 'number' && a.rating >= 0 ? a.rating : 4, // rating default 4
     };
     setAnnunci(prev => [...prev, annuncioConDefaults]);
   };
