@@ -1,6 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
-import Elio from './icons/elio.svg';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, Modal, TouchableOpacity } from 'react-native';
 import BlueIdea from './icons/blueIdea.svg';
 
 const reviews = [
@@ -31,15 +30,24 @@ const averageRating = (
   reviews.reduce((sum, review) => sum + review.stars, 0) / reviews.length
 ).toFixed(1);
 
-const Profilo: React.FC = () => {
+type Annuncio = {
+  nome: string;
+  descrizione: string;
+  punti: number;
+  disponibilita: string;
+};
+
+const Profilo = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedAnnuncio, setSelectedAnnuncio] = useState<Annuncio | null>(null);
+
   return (
     <View style={styles.wrapper}>
       <BlueIdea width={60} height={90} style={styles.blueIdeaIcon} />
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.centered}>
-          <View style={styles.svgAvatarWrapper}>
-            <Elio width={140} height={140} />
-          </View>
+          <Image source={require('./images/elio.jpg')} style={styles.avatar} />
           <Text style={styles.nome}>Elio</Text>
           <View style={styles.pointsBox}>
             <Text style={styles.pointsText}>120 punti</Text>
@@ -55,17 +63,29 @@ const Profilo: React.FC = () => {
 
         <View style={styles.box}>
           <Text style={styles.sectionTitle}>Annunci</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-            <View style={styles.annuncioCard}>
-              <Image
-                source={require('./icons/italiano.png')}
-                style={styles.annuncioCardImg}
-                resizeMode="cover"
-              />
-              <View style={styles.annuncioCardTextBox}>
-                <Text style={styles.annuncioCardText}>Ripetizioni di italiano</Text>
+          <View style={styles.annunciRow}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedAnnuncio({
+                  nome: 'Ripetizioni di italiano',
+                  descrizione: 'Lezioni di italiano per tutti i livelli. Online o in presenza.',
+                  punti: 50,
+                  disponibilita: 'Lunedì - Venerdì dalle 15:00 alle 18:00'
+                });
+                setModalVisible(true);
+              }}
+            >
+              <View style={styles.annuncioCard}>
+                <Image
+                  source={require('./icons/italiano.png')}
+                  style={styles.annuncioCardImg}
+                  resizeMode="cover"
+                />
+                <View style={styles.annuncioCardTextBox}>
+                  <Text style={styles.annuncioCardText}>Ripetizioni di italiano</Text>
+                </View>
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -77,7 +97,7 @@ const Profilo: React.FC = () => {
               <Image source={review.image} style={styles.reviewImage} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.reviewName}>{review.name}</Text>
-                <Text style={styles.reviewStars}>⭐️⭐️⭐️⭐️⭐️</Text>
+                <Text style={styles.reviewStars}>{'⭐️'.repeat(review.stars)}</Text>
                 <Text style={styles.reviewAnnuncio}>{review.annuncio}</Text>
                 <Text style={styles.reviewDescription}>{review.description}</Text>
               </View>
@@ -85,6 +105,30 @@ const Profilo: React.FC = () => {
           ))}
         </View>
       </ScrollView>
+
+      {/* Modal per dettagli annuncio */}
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalCloseIcon}>
+              <Text style={styles.modalCloseIconText}>✕</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.modalTitle}>{selectedAnnuncio?.nome}</Text>
+            <Text style={styles.modalLabel}>Descrizione</Text>
+            <Text style={styles.modalText}>{selectedAnnuncio?.descrizione}</Text>
+            <Text style={styles.modalLabel}>Punti necessari</Text>
+            <Text style={styles.modalText}>{selectedAnnuncio?.punti} pt</Text>
+            <Text style={styles.modalLabel}>Disponibilità</Text>
+            <Text style={styles.modalText}>{selectedAnnuncio?.disponibilita}</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -93,6 +137,12 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#F9F9F9',
+  },
+  blueIdeaIcon: {
+    position: 'absolute',
+    top: 24,
+    left: 20,
+    zIndex: 10,
   },
   scrollContent: {
     padding: 20,
@@ -145,7 +195,7 @@ const styles = StyleSheet.create({
   },
   annunciRow: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     marginTop: 12,
   },
   annuncioCard: {
@@ -155,7 +205,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#D8D1FF',
     marginRight: 12,
-    marginBottom: 8,
     elevation: 2,
     shadowColor: '#2B31BA',
     shadowOffset: { width: 0, height: 2 },
@@ -220,25 +269,65 @@ const styles = StyleSheet.create({
     color: '#444',
     marginTop: 4,
   },
-  svgAvatarWrapper: {
-  width: 140,
-  height: 140,
-  borderRadius: 70,
-  overflow: 'hidden',
-  marginBottom: 10,
-  marginTop: 30,
-  borderWidth: 2,
-  borderColor: '#D8D1FF',
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 20,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2B31BA',
+    marginBottom: 12,
+  },
+  modalLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#555',
+    marginTop: 10,
+  },
+  modalText: {
+    fontSize: 14,
+    color: '#333',
+    marginTop: 4,
+  },
+  modalCloseButton: {
+    marginTop: 20,
+    backgroundColor: '#2B31BA',
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  modalCloseText: {
+    color: '#FFF',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  modalCloseIcon: {
+  position: 'absolute',
+  top: 10,
+  right: 10,
+  backgroundColor: '#2B31BA',
+  borderRadius: 20,
+  width: 30,
+  height: 30,
   justifyContent: 'center',
   alignItems: 'center',
+  zIndex: 1,
 },
-blueIdeaIcon: {
-  position: 'absolute',
-  top: 24,
-  left: 20,
-  zIndex: 10,
-}
-
+modalCloseIconText: {
+  color: '#FFF',
+  fontSize: 18,
+  fontWeight: 'bold',
+},
 });
 
-export default Profilo;
+export default Profilo;//
