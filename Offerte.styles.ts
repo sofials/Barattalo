@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -6,23 +8,47 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 
-  // 🔍 Barra di ricerca (sticky)
-  searchWrapper: {
+  headerFixed: {
     position: 'absolute',
-    top: 50, // spazio più sicuro per status bar
+    top: 0,
     left: 0,
     right: 0,
-    zIndex: 10,
-    alignItems: 'center',
+    backgroundColor: '#fff',
+    zIndex: 20,
+    paddingTop: 60,
     paddingHorizontal: 16,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+
+  titoloWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  // Ho ridotto dimensioni da 80x80 a 24x24 per coerenza con JSX
+  titoloIcona: {
+    marginRight: 8,
+    width: 24,
+    height: 24,
+  },
+  titoloTesto: {
+    fontWeight: 'bold',
+    color: '#6B53FF',
+    fontSize: 26,
+  },
+
+  searchWrapper: {
+    alignItems: 'center',
   },
   searchBox: {
     width: '100%',
     maxWidth: 340,
-    backgroundColor: '#d8d1ff', // sfondo lilla chiaro
+    backgroundColor: '#d8d1ff',
     borderRadius: 12,
     padding: 10,
-    elevation: 4, // ombra su Android
+    elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -36,73 +62,75 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 42,
     borderWidth: 1,
-    borderColor: '#a99be6', // bordo in tinta
+    borderColor: '#a99be6',
     borderRadius: 8,
     paddingHorizontal: 10,
     marginRight: 8,
-    color: '#000', // testo digitato nero
-    backgroundColor: '#fff', // sfondo interno input
+    color: '#000',
+    backgroundColor: '#fff',
     fontWeight: 'bold',
   },
 
-  // 🟣 Pulsante filtri
   filterButton: {
     backgroundColor: '#d8d1ff',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
-    marginRight: 8,
   },
   filterButtonText: {
     color: '#2B31BA',
     fontWeight: 'bold',
   },
 
-  // 📜 Contenuto scrollabile
   container: {
     flex: 1,
-    paddingTop: 120, // spazio aumentato per non coprire nulla
     paddingHorizontal: 16,
   },
 
-  // 🏷️ Sezioni per categoria
   categoria: {
     marginBottom: 24,
   },
   categoriaTitolo: {
-    fontSize: 18,
     fontWeight: 'bold',
+    fontSize: 18,
+    color: '#4A4A4A',
     marginBottom: 12,
   },
 
-  // 🃏 Card orizzontali
   cardList: {
-    paddingLeft: 8,
-    paddingRight: 8,
+    paddingLeft: 4,
   },
+
   card: {
-    width: 140,
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
     marginRight: 12,
-    borderRadius: 8,
-    overflow: 'hidden',
-    backgroundColor: '#d8d1ff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+    width: 140,
   },
+
   cardImage: {
     width: '100%',
     height: 100,
-  },
-  cardTitle: {
-    padding: 8,
-    fontSize: 14,
-    fontWeight: '600',
+    borderRadius: 10,
+    marginBottom: 8,
   },
   cardImageDefault: {
-  width: '100%',
-  height: 100,
-  backgroundColor: '#fff', // sfondo grigio per default
-  borderRadius: 8,
-},
+    width: '100%',
+    height: 80,
+    borderRadius: 10,
+    marginBottom: 8,
+  },
 
+  cardTitle: {
+    fontWeight: 'bold',
+    color: '#333',
+  },
 });
 
 export default styles;

@@ -25,20 +25,14 @@ const Offerte: React.FC = () => {
   const [showFiltri, setShowFiltri] = useState(false);
   const [annuncioSelezionato, setAnnuncioSelezionato] = useState<Annuncio | null>(null);
 
-  const filteredAnnunci = () =>
-    annunci.filter(a => {
-      if (a.isNew) return false; // escludi annunci nuovi
-      if (filtroCategorie.length > 0 && !filtroCategorie.includes(a.categoria)) {
-        return false;
-      }
-      if (!a.titolo.toLowerCase().includes(search.toLowerCase())) {
-        return false;
-      }
-      if (a.km !== undefined && a.km > filtroDistanza) {
-        return false;
-      }
-      return true;
-    });
+  // Calcolo filtrati una volta sola
+  const filteredAnnunci = annunci.filter(a => {
+    if (a.isNew) return false;
+    if (filtroCategorie.length > 0 && !filtroCategorie.includes(a.categoria)) return false;
+    if (!a.titolo.toLowerCase().includes(search.toLowerCase())) return false;
+    if (a.km !== undefined && a.km > filtroDistanza) return false;
+    return true;
+  });
 
   const categorieDaMostrare = filtroCategorie.length > 0 ? filtroCategorie : categories;
 
@@ -53,37 +47,44 @@ const Offerte: React.FC = () => {
 
   return (
     <View style={styles.wrapper}>
-      {/* 🔍 Barra di ricerca */}
-      <View style={styles.searchWrapper}>
-        <View style={[styles.searchBox, { width: Math.min(340, screenWidth * 0.9) }]}>
-          <View style={styles.searchContainer}>
-            <TextInput
-              placeholder="Cerca annunci..."
-              placeholderTextColor="#333"
-              value={search}
-              onChangeText={setSearch}
-              style={styles.searchInput}
-              autoCorrect={false}
-              autoCapitalize="none"
-            />
-            <TouchableOpacity
-              style={styles.filterButton}
-              onPress={() => setShowFiltri(true)}
-            >
-              <Text style={styles.filterButtonText}>Filtri</Text>
-            </TouchableOpacity>
-            <CameraDoodle width={40} height={40} />
+      {/* Header fisso con titolo e barra ricerca */}
+      <View style={styles.headerFixed}>
+        <View style={styles.titoloWrapper}>
+          <CameraDoodle width={32} height={32} style={styles.titoloIcona} />
+          <Text style={styles.titoloTesto}>Annunci</Text>
+        </View>
+
+        <View style={styles.searchWrapper}>
+          <View style={[styles.searchBox, { width: Math.min(340, screenWidth * 0.9) }]}>
+            <View style={styles.searchContainer}>
+              <TextInput
+                placeholder="Cerca annunci..."
+                placeholderTextColor="#333"
+                value={search}
+                onChangeText={setSearch}
+                style={styles.searchInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+              <TouchableOpacity
+                style={styles.filterButton}
+                onPress={() => setShowFiltri(true)}
+              >
+                <Text style={styles.filterButtonText}>Filtri</Text>
+              </TouchableOpacity>
+              {/* Rimosso icona extra qui */}
+            </View>
           </View>
         </View>
       </View>
 
-      {/* 📜 Annunci per categoria */}
+      {/* Lista annunci */}
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 100, paddingTop: 180 }}
       >
         {categorieDaMostrare.map(categoria => {
-          const filtered = filteredAnnunci().filter(a => a.categoria === categoria);
+          const filtered = filteredAnnunci.filter(a => a.categoria === categoria);
           if (filtered.length === 0) return null;
 
           return (
@@ -95,7 +96,8 @@ const Offerte: React.FC = () => {
                 contentContainerStyle={styles.cardList}
               >
                 {filtered.map((a, i) => {
-                  const isDefaultImage = a.immagine === immagineDefault;
+                  // Controllo immagine default più robusto: se a.immagine non esiste o è null
+                  const isDefaultImage = !a.immagine;
                   return (
                     <TouchableOpacity
                       key={i}
@@ -117,7 +119,6 @@ const Offerte: React.FC = () => {
         })}
       </ScrollView>
 
-      {/* 🎛️ Filtri */}
       <Filtri
         visible={showFiltri}
         initialCategories={filtroCategorie}
