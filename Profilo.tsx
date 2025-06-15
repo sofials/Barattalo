@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import Elio from './icons/elio.svg';
+import BlueIdea from './icons/blueIdea.svg';
 
 const reviews = [
   {
@@ -10,7 +12,7 @@ const reviews = [
     description: 'Elio è un insegnante fantastico! Le sue lezioni sono sempre interessanti e coinvolgenti.',
   },
   {
-    name: 'Giulia', 
+    name: 'Giulia',
     image: require('./images/giulia.jpeg'),
     stars: 5,
     annuncio: 'Ripetizioni di italiano',
@@ -25,63 +27,63 @@ const reviews = [
   },
 ];
 
+const averageRating = (
+  reviews.reduce((sum, review) => sum + review.stars, 0) / reviews.length
+).toFixed(1);
+
 const Profilo: React.FC = () => {
   return (
     <View style={styles.wrapper}>
+      <BlueIdea width={60} height={90} style={styles.blueIdeaIcon} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-
-        {/* AVATAR E NOME */}
         <View style={styles.centered}>
-          <Image source={require('./images/elio.jpg')} style={styles.avatar} />
+          <View style={styles.svgAvatarWrapper}>
+            <Elio width={140} height={140} />
+          </View>
+          <Text style={styles.nome}>Elio</Text>
           <View style={styles.pointsBox}>
-            <Text style={styles.pointsText}>Elio 700pt</Text>
+            <Text style={styles.pointsText}>120 punti</Text>
           </View>
         </View>
 
-        {/* BIOGRAFIA */}
         <View style={styles.box}>
           <Text style={styles.sectionTitle}>Biografia</Text>
           <Text style={styles.description}>
-            Ciao sono Elio! Sono un ex insegnante in pensione, amo leggere, amo raccontare storie e amo vivere la vita! Se hai bisogno di aiuto chiedi pure!
+            Ciao sono Elio! Sono un ex insegnante in pensione. Amo leggere, amo raccontare storie e amo vivere la vita! Se hai bisogno di aiuto chiedi pure!
           </Text>
         </View>
 
-        {/* ANNUNCI */}
         <View style={styles.box}>
-          <Text style={styles.sectionTitle}>I miei annunci</Text>
-          <View style={styles.annunciRow}>
-            <View style={styles.annuncio}>
-              <View style={styles.annuncioIcon}><Text style={styles.annuncioEmoji}>📘</Text></View>
-              <Text style={styles.annuncioText}>Ripetizioni di italiano</Text>
+          <Text style={styles.sectionTitle}>Annunci</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+            <View style={styles.annuncioCard}>
+              <Image
+                source={require('./icons/italiano.png')}
+                style={styles.annuncioCardImg}
+                resizeMode="cover"
+              />
+              <View style={styles.annuncioCardTextBox}>
+                <Text style={styles.annuncioCardText}>Ripetizioni di italiano</Text>
+              </View>
             </View>
           </View>
         </View>
 
-        {/* RECENSIONI */}
-        <View style={[styles.box, { maxHeight: 350 }]}>
-          <Text style={[styles.sectionTitle, { textAlign: 'center' }]}>Recensioni</Text>
-          <Text style={styles.ratingValue}>5</Text>
-          <Text style={styles.stars}>★ ★ ★ ★ ★</Text>
-
-          <FlatList
-            data={reviews}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.reviewCard}>
-                <Image source={item.image} style={styles.reviewImage} />
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.reviewName}>{item.name}</Text>
-                  <Text style={styles.reviewAnnuncio}> • {item.annuncio}</Text>
-                  <Text style={styles.reviewStars}>
-                    {'★'.repeat(item.stars)}{'☆'.repeat(5 - item.stars)}
-                  </Text>
-                  <Text style={styles.reviewDescription}>{item.description}</Text>
-                </View>
+        <View style={styles.box}>
+          <Text style={styles.sectionTitle}>Recensioni</Text>
+          <Text style={styles.ratingAverage}>⭐️ {averageRating} / 5</Text>
+          {reviews.map((review, index) => (
+            <View key={index} style={styles.reviewCard}>
+              <Image source={review.image} style={styles.reviewImage} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.reviewName}>{review.name}</Text>
+                <Text style={styles.reviewStars}>⭐️⭐️⭐️⭐️⭐️</Text>
+                <Text style={styles.reviewAnnuncio}>{review.annuncio}</Text>
+                <Text style={styles.reviewDescription}>{review.description}</Text>
               </View>
-            )}
-          />
+            </View>
+          ))}
         </View>
-
       </ScrollView>
     </View>
   );
@@ -90,120 +92,153 @@ const Profilo: React.FC = () => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F9F9F9',
   },
   scrollContent: {
-    padding: 16,
+    padding: 20,
   },
   centered: {
     alignItems: 'center',
-    marginTop: 20,
+    marginBottom: 20,
   },
   avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    marginBottom: 10,
+    marginTop: 60,
+  },
+  nome: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#2B31BA',
   },
   pointsBox: {
-    marginTop: 10,
-    backgroundColor: '#efd7cd',
-    paddingHorizontal: 12,
+    backgroundColor: '#EBDBCD',
+    paddingHorizontal: 16,
     paddingVertical: 6,
-    borderRadius: 8,
+    borderRadius: 12,
+    marginTop: 6,
   },
   pointsText: {
-    fontWeight: '600',
-    color: '#333',
+    color: '#2B31BA',
+    fontWeight: 'bold',
   },
   box: {
-    backgroundColor: '#f0e9e3',
-    padding: 12,
-    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderRadius: 12,
     marginTop: 20,
+    borderColor: '#D8D1FF',
+    borderWidth: 1,
   },
   sectionTitle: {
-    color: '#9e938a',
-    fontWeight: 'bold',
+    color: '#2B31BA',
+    fontWeight: '600',
     fontSize: 16,
+    marginBottom: 8,
   },
   description: {
-    marginTop: 6,
-    color: '#333',
     fontSize: 14,
+    color: '#333',
+    lineHeight: 20,
   },
   annunciRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-    flexWrap: 'wrap',
-  },
-  annuncio: {
-    width: '30%',
-    alignItems: 'center',
-  },
-  annuncioIcon: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
     justifyContent: 'center',
+    marginTop: 12,
+  },
+  annuncioCard: {
+    width: 120,
+    height: 120,
+    borderRadius: 11,
+    overflow: 'hidden',
+    backgroundColor: '#D8D1FF',
+    marginRight: 12,
+    marginBottom: 8,
+    elevation: 2,
+    shadowColor: '#2B31BA',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     alignItems: 'center',
-    marginBottom: 4,
   },
-  annuncioEmoji: {
-    fontSize: 24,
+  annuncioCardImg: {
+    width: '100%',
+    height: 75,
   },
-  annuncioText: {
-    fontSize: 12,
-    textAlign: 'center',
+  annuncioCardTextBox: {
+    backgroundColor: '#FFF',
+    width: '100%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  ratingValue: {
-    fontSize: 28,
+  annuncioCardText: {
+    fontSize: 13,
+    color: '#2B31BA',
     fontWeight: 'bold',
-    marginVertical: 8,
     textAlign: 'center',
   },
-  stars: {
-    fontSize: 20,
-    color: '#f5b301',
-    textAlign: 'center',
-    marginBottom: 16,
+  ratingAverage: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2B31BA',
+    marginBottom: 12,
   },
   reviewCard: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    padding: 8,
+    backgroundColor: '#FFF',
+    padding: 10,
     borderRadius: 10,
-    borderColor: '#d4c8ff',
+    borderColor: '#D8D1FF',
     borderWidth: 1,
-    marginBottom: 12,
+    marginBottom: 10,
   },
   reviewImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    marginRight: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    marginRight: 10,
   },
   reviewName: {
     fontWeight: 'bold',
     fontSize: 14,
+    color: '#2B31BA',
   },
   reviewStars: {
-    fontSize: 18,
-    color: '#f5b301',
-  },
-  reviewDescription: {
-    marginTop: 4,
     fontSize: 14,
-    color: '#444',
+    color: '#F5B301',
   },
   reviewAnnuncio: {
-  fontSize: 12,
-  color: '#777',
-  marginLeft: 4,
+    fontSize: 12,
+    color: '#777',
+    marginTop: 2,
+  },
+  reviewDescription: {
+    fontSize: 13,
+    color: '#444',
+    marginTop: 4,
+  },
+  svgAvatarWrapper: {
+  width: 140,
+  height: 140,
+  borderRadius: 70,
+  overflow: 'hidden',
+  marginBottom: 10,
+  marginTop: 30,
+  borderWidth: 2,
+  borderColor: '#D8D1FF',
+  justifyContent: 'center',
+  alignItems: 'center',
 },
+blueIdeaIcon: {
+  position: 'absolute',
+  top: 24,
+  left: 20,
+  zIndex: 10,
+}
+
 });
 
 export default Profilo;
