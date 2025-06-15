@@ -41,7 +41,7 @@ const reviews = [
     image: require('./images/simone.jpeg'),
     stars: 5,
     annuncio: 'Ripetizioni di italiano',
-    description: 'Elio ha una grande passione per l\'insegnamento, lo consiglio vivamente!',
+    description: "Elio ha una grande passione per l'insegnamento, lo consiglio vivamente!",
   },
 ];
 
@@ -50,17 +50,25 @@ const averageRating = (
 ).toFixed(1);
 
 const Profilo: React.FC = () => {
-  const { annunci } = useAnnunci();
+  const { annunci, rimuoviAnnuncio } = useAnnunci();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedAnnuncio, setSelectedAnnuncio] = useState<Annuncio | null>(null);
 
   const annunciNuovi = annunci.filter(a => a.isNew);
 
+  const handleRemoveAnnuncio = () => {
+    if (selectedAnnuncio) {
+      rimuoviAnnuncio(selectedAnnuncio.titolo);  // Passa la chiave o id giusto (qui titolo)
+      setModalVisible(false);
+      setSelectedAnnuncio(null);
+    }
+  };
+
   return (
     <View style={styles.wrapper}>
-      <BlueIdea width={60} height={90} style={styles.blueIdeaIcon} />
-
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <BlueIdea width={60} height={90} style={styles.blueIdeaIcon} />
+
         <View style={styles.centered}>
           <Image source={require('./images/elio.jpg')} style={styles.avatar} />
           <Text style={styles.nome}>Elio</Text>
@@ -150,6 +158,15 @@ const Profilo: React.FC = () => {
                 <Text style={styles.modalLabel}>Disponibilità</Text>
                 <Text style={styles.modalText}>{selectedAnnuncio.disponibilita}</Text>
               </>
+            )}
+
+            {selectedAnnuncio?.isNew && (
+              <TouchableOpacity
+                onPress={handleRemoveAnnuncio}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Rimuovi annuncio</Text>
+              </TouchableOpacity>
             )}
           </View>
         </View>

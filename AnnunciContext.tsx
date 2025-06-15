@@ -15,6 +15,7 @@ export type Annuncio = {
 export type AnnuncioContextType = {
   annunci: Annuncio[];
   aggiungiAnnuncio: (a: Annuncio) => void;
+  rimuoviAnnuncio: (titolo: string) => void;  // funzione rimuovi
 };
 
 export const categories = [
@@ -130,7 +131,6 @@ const annunciDefault: Annuncio[] = setDefaultRating([
   ]),
 ]);
 
-
 const AnnuncioContext = createContext<AnnuncioContextType | undefined>(undefined);
 
 export const AnnuncioProvider = ({ children }: { children: ReactNode }) => {
@@ -141,14 +141,18 @@ export const AnnuncioProvider = ({ children }: { children: ReactNode }) => {
       ...a,
       km: a.km ?? 10,
       immagine: a.immagine ?? immagineDefault,
-      isNew: a.isNew ?? true, // nuovi annunci di default
-      rating: typeof a.rating === 'number' && a.rating >= 0 ? a.rating : 4, // rating default 4
+      isNew: a.isNew ?? true,
+      rating: typeof a.rating === 'number' && a.rating >= 0 ? a.rating : 4,
     };
     setAnnunci(prev => [...prev, annuncioConDefaults]);
   };
 
+  const rimuoviAnnuncio = (titolo: string) => {
+    setAnnunci(prev => prev.filter(a => !(a.titolo === titolo && a.isNew)));
+  };
+
   return (
-    <AnnuncioContext.Provider value={{ annunci, aggiungiAnnuncio }}>
+    <AnnuncioContext.Provider value={{ annunci, aggiungiAnnuncio, rimuoviAnnuncio }}>
       {children}
     </AnnuncioContext.Provider>
   );

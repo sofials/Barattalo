@@ -5,25 +5,25 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9F9F9',
   },
-  blueIdeaIcon: {
-    position: 'absolute',
-    top: 24,
-    left: 20,
-    zIndex: 10,
-  },
+  avatar: {
+  width: 140,
+  height: 140,
+  borderRadius: 70,
+  marginBottom: 10,
+},
+ blueIdeaIcon: {
+  // rimuovi position, top e left
+  zIndex: 10, // opzionale, puoi anche rimuoverlo se non serve
+  // eventualmente aggiungi margin o padding per posizionarla in modo naturale
+  marginTop: 24,
+  marginLeft: 20,
+},
   scrollContent: {
     padding: 20,
   },
   centered: {
     alignItems: 'center',
     marginBottom: 20,
-  },
-  avatar: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    marginBottom: 10,
-    marginTop: 60,
   },
   nome: {
     fontSize: 26,
@@ -66,30 +66,25 @@ export const styles = StyleSheet.create({
   },
   annuncioCard: {
     width: 140,
-    height: 180, // aumenta l'altezza per far spazio al testo
+    height: 180,
     borderRadius: 11,
     backgroundColor: '#FFFFFF',
     marginRight: 12,
-    justifyContent: 'flex-start', // testo sotto immagine
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 10,
   },
   annuncioImage: {
-    width: '100%',
+    width: 140,
     height: 140,
     borderRadius: 8,
     marginBottom: 6,
-    resizeMode: 'cover',
+    // resizeMode "cover" viene impostato direttamente nell'Image JSX
   },
   annuncioCardText: {
     color: '#2B31BA',
     fontWeight: 'bold',
     textAlign: 'center',
-  },
-  annuncioCardPlaceholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   ratingAverage: {
     fontSize: 18,
@@ -160,4 +155,19 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+ button: {
+  backgroundColor: '#EBDBCD',  // come pointsBox
+  marginTop: 20,
+  paddingVertical: 10,
+  borderRadius: 5,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+buttonText: {
+  color: '#2B31BA',  // come pointsText
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
+
+
 });
