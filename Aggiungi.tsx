@@ -19,6 +19,7 @@ const Aggiungi: React.FC = () => {
 
   const [titolo, setTitolo] = useState('');
   const [descrizione, setDescrizione] = useState('');
+  const [disponibilita, setDisponibilita] = useState('');
   const [categoria, setCategoria] = useState(categories[0] || '');
   const [puntiAnnuncio, setPuntiAnnuncio] = useState<number>(30);
 
@@ -30,6 +31,11 @@ const Aggiungi: React.FC = () => {
 
     if (!descrizione.trim()) {
       Alert.alert('Errore', 'Inserisci la descrizione');
+      return;
+    }
+
+    if (!disponibilita.trim()) {
+      Alert.alert('Errore', 'Inserisci la disponibilità');
       return;
     }
 
@@ -46,6 +52,7 @@ const Aggiungi: React.FC = () => {
     aggiungiAnnuncio({
       titolo,
       descrizione,
+      disponibilita,
       categoria,
       puntiAnnuncio,
       isNew: true,
@@ -53,6 +60,7 @@ const Aggiungi: React.FC = () => {
 
     setTitolo('');
     setDescrizione('');
+    setDisponibilita('');
     setCategoria(categories[0] || '');
     setPuntiAnnuncio(30);
   };
@@ -105,6 +113,22 @@ const Aggiungi: React.FC = () => {
                 placeholder="Scrivi la descrizione"
                 multiline
                 style={[styles.input, { height: 80, textAlignVertical: 'top' }]}
+              />
+            </View>
+          </View>
+
+          {/* Disponibilità */}
+          <View style={styles.row}>
+            <View style={styles.labelRow}>
+              <Text style={styles.label}>Disponibilità</Text>
+            </View>
+            <View style={styles.inputRow}>
+              <TextInput
+                value={disponibilita}
+                onChangeText={setDisponibilita}
+                placeholder="Quando sei disponibile?"
+                multiline
+                style={[styles.input, { height: 60, textAlignVertical: 'top' }]}
               />
             </View>
           </View>

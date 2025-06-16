@@ -65,22 +65,23 @@ export const styles = StyleSheet.create({
     marginTop: 12,
   },
   annuncioCard: {
-    width: 140,
-    height: 180,
-    borderRadius: 11,
-    backgroundColor: '#FFFFFF',
-    marginRight: 12,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: 10,
-  },
-  annuncioImage: {
-    width: 140,
-    height: 140,
-    borderRadius: 8,
-    marginBottom: 6,
-    // resizeMode "cover" viene impostato direttamente nell'Image JSX
-  },
+  width: 140,
+  height: 180,
+  borderRadius: 11,
+  backgroundColor: '#FFFFFF',
+  marginRight: 12,
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  padding: 10,
+  overflow: 'hidden', // <-- aggiungi questo
+},
+annuncioImage: {
+  width: '100%', // <-- cambia da 140 a '100%'
+  height: 120,    // <-- riduci per dare spazio al titolo
+  borderRadius: 8,
+  marginBottom: 6,
+},
+
   annuncioCardText: {
     color: '#2B31BA',
     fontWeight: 'bold',
