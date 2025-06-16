@@ -5,11 +5,13 @@ import MainTabs from './MainTabs';
 import Inbox from './Inbox';
 import Chat from './Chat';
 import Rating from './Rating'
+import { AnnuncioProvider } from './AnnunciContext'; 
 
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
   return (
+  <AnnuncioProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="MainTabs" component={MainTabs} />
@@ -18,6 +20,7 @@ const App: React.FC = () => {
         <Stack.Screen name="Rating" component={Rating} />
       </Stack.Navigator>
     </NavigationContainer>
+    </AnnuncioProvider>
   );
 };
 

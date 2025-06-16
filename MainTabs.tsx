@@ -23,7 +23,7 @@ const MainTabs: React.FC = () => (
       tabBarIcon: ({ color, size, focused }) => {
         let IconComponent;
         if (route.name === 'Home') IconComponent = HomeIcon;
-        else if (route.name === 'Offerte') IconComponent = OffersIcon;
+        else if (route.name === 'Annunci') IconComponent = OffersIcon;
         else if (route.name === 'Aggiungi') IconComponent = AddIcon;
         else if (route.name === 'Eventi') IconComponent = EventsIcon;
         else if (route.name === 'Profilo') IconComponent = ProfileIcon;
@@ -48,7 +48,7 @@ const MainTabs: React.FC = () => (
     })}
   >
     <Tab.Screen name="Home" component={Home} />
-    <Tab.Screen name="Offerte" component={Offerte} />
+    <Tab.Screen name="Annunci" component={Offerte} />
     <Tab.Screen name="Aggiungi" component={Aggiungi} />
     <Tab.Screen name="Eventi" component={Eventi} />
     <Tab.Screen name="Profilo" component={Profilo} />
