@@ -1,107 +1,143 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const screenWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
-  eventiContainer: {
+  wrapper: {
     flex: 1,
-    paddingHorizontal: 20,
-    backgroundColor: '#f9f9f9',
-  },
-  booksIcon: {
-    position: 'absolute',
-    marginTop: 20,
-    top: 60,
-    left: 16,
-    zIndex: 10,
-  },
-  eventoSezione: {
-    marginTop: 20,
-    marginBottom: 40,
-  },
-  h2: {
-    fontSize: 26,
-    marginBottom: 0,
-    marginTop: 30,
-    color: '#6B53FF',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  eventoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF4F4',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 16,
-    overflow: 'hidden',
-    maxWidth: '100%',
-  },
-  eventoImg: {
-    width: 60,
-    height: 60,
-    borderRadius: 11,
-    marginRight: 16,
     backgroundColor: '#fff',
-    overflow: 'hidden',
   },
-  eventoContent: {
-    flex: 1,
-    overflow: 'hidden',
-  },
-  eventoTesto: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2B31BA',
-    marginBottom: 4,
-  },
-  eventoDescrizione: {
-    fontSize: 14,
-    color: '#666',
-  },
-  girlIcon: {
+
+  headerFixed: {
     position: 'absolute',
-    right: 16,
-    bottom: 16,
-    width: 80,
-    height: 80,
-    zIndex: 10,
-  },
-  searchBar: {
-    backgroundColor: '#D8D1FF',
-    borderRadius: 12,
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    zIndex: 20,
+    paddingTop: 60,
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    fontSize: 16,
-    marginHorizontal: 20,
-    marginBottom: 10,
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: '#eee',
-    color: '#333',
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
   },
-  topBar: {
+
+  titoloWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 56,
-    paddingLeft: 16,
     marginBottom: 10,
   },
-  titolo: {
-    fontSize: 28,
+
+  titoloTesto: {
     fontWeight: 'bold',
-    color: '#6B53FF',
+    color: '#3B82F6', // un bel blu per differenziare dagli annunci
+    fontSize: 26,
     marginLeft: 12,
-    marginTop: 17,
+    lineHeight: 32,
+    marginTop: 20,
   },
-  sottotitolo: {
-    fontSize: 20,
-    color: '#6267CC',
-    marginBottom: 18,
-    marginTop: 0,
-    textAlign: 'left',
-    fontWeight: '600',
+
+  searchWrapper: {
+    alignItems: 'center',
+  },
+
+  searchBox: {
+    width: '100%',
+    maxWidth: 340,
+    backgroundColor: '#e0ecff',
+    borderRadius: 12,
+    padding: 10,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  searchInput: {
+    flex: 1,
+    height: 42,
+    borderWidth: 1,
+    borderColor: '#90b4f0',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginRight: 8,
+    color: '#000',
+    backgroundColor: '#fff',
+    fontWeight: 'normal',
+  },
+
+  filterButton: {
+    backgroundColor: '#e0ecff',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+
+  filterButtonText: {
+    color: '#1D4ED8',
+    fontWeight: 'bold',
+  },
+
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+
+  categoria: {
+    marginBottom: 24,
+  },
+
+  categoriaTitolo: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#1D4ED8',
+    marginBottom: 12,
+  },
+
+  cardList: {
+    paddingLeft: 4,
+    alignItems: 'center',
+  },
+
+  card: {
+    width: 140,
+    height: 160,
+    marginRight: 12,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+    overflow: 'hidden',
+  },
+
+  cardImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+
+  cardImageDefault: {
+    width: '100%',
+    height: 120,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+
+  cardTitle: {
+    fontWeight: 'bold',
+    color: '#333',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 
