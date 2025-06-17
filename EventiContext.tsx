@@ -3,7 +3,7 @@ import { ImageSourcePropType } from 'react-native';
 
 export type Evento = {
   titolo: string
-  categoria: string;
+  categoriaE: string;
   immagine?: ImageSourcePropType;
   km?: number;
   isNew?: boolean;
@@ -43,7 +43,7 @@ const setDefaultRating = (eventi: Evento[]): Evento[] => {
 const eventiDefault: Evento[] = setDefaultRating([
   {
     titolo: 'Shakespare in love',
-    categoria: 'Libri e Lettura',
+    categoriaE: 'Libri e Lettura',
     immagine: require('./icons/inlove.jpg'),
     km: 40,
     isNew: true, 
@@ -51,53 +51,53 @@ const eventiDefault: Evento[] = setDefaultRating([
   ...setIsNewFalse([
     {
       titolo: 'Letture per giovani',
-      categoria: 'Libri e Lettura',
+      categoriaE: 'Libri e Lettura',
       immagine: require('./icons/libri.jpg'),
       km: 20
     },
     {
       titolo: 'Horror in prima linea',
-      categoria: 'Libri e Lettura',
+      categoriaE: 'Libri e Lettura',
       immagine: require('./icons/aiuto.jpg'),
       km: 2
 
     },
     {
       titolo: 'Birre artigianali venete',
-      categoria: 'Apprendimento',
+      categoriaE: 'Apprendimento',
       immagine: require('./icons/birre.jpg'),
       km: 35
     },
     {
       titolo: 'Formaggi di capra',
-      categoria: 'Degustazioni',
+      categoriaE: 'Degustazioni',
       immagine: require('./icons/capra.jpg'),
       km: 15
     },
     {
       titolo: 'Grappa per tutti',
-      categoria: 'Degustazione',
+      categoriaE: 'Degustazione',
       immagine: require('./icons/grappa.jpg'),
       km: 5
 
     },
     {
       titolo: 'Western',
-      categoria: 'Film e Cinema',
+      categoriaE: 'Film e Cinema',
       immagine: require('./icons/west.jpg'),
       km: 4
 
     },
     {
       titolo: 'Dario Argento',
-      categoria: 'Film e Cinema ',
+      categoriaE: 'Film e Cinema ',
       immagine: require('./icons/dario.jpg'),
 
       km: 6
     },
     {
       titolo: 'Cuori bollenti',
-      categoria: 'Film e Cinema',
+      categoriaE: 'Film e Cinema',
       immagine: require('./icons/cuori.jpg'),
       km: 96
     }
@@ -130,5 +130,8 @@ export const EventoProvider = ({ children }: { children: ReactNode }) => {
     </EventoContext.Provider>
   );
 };
-
-export default EventoContext
+export const useEventi = (): EventoContextTypeContextType => {
+  const context = useContext(EventoContext);
+  if (!context) throw new Error('useEventi must be used inside EventoProvider');
+  return context;
+};

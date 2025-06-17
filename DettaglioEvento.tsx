@@ -5,7 +5,7 @@ import styles from './DettaglioEvento.styles'; // Puoi mantenerlo o crearne uno 
 export type Evento = {
   titolo: string;
   descrizione: string;
-  categoria: string;
+  categoriaE: string;
   immagine?: ImageSourcePropType;
   km?: number;
   puntiAnnuncio: number;
@@ -57,7 +57,7 @@ const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => 
         />
 
         <Text style={styles.title}>{evento.titolo}</Text>
-        <Text style={styles.category}>{evento.categoria}</Text>
+        <Text style={styles.category}>{evento.categoriaE}</Text>
 
         <Text style={styles.titleDescription}>Descrizione</Text>
         <Text style={styles.description}>{evento.descrizione}</Text>
