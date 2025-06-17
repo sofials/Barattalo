@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, ImageSourcePropType } from 'react-native';
-import styles from './DettaglioAnnuncio.styles'; // Puoi mantenerlo o crearne uno nuovo per eventi
+import { useNavigation } from '@react-navigation/native';
+import styles from './DettaglioEvento.styles';
 
 export type Evento = {
   titolo: string;
   descrizione: string;
-  categoria: string;
+  categoriaE: string;
   immagine?: ImageSourcePropType;
   km?: number;
   puntiAnnuncio: number;
@@ -18,8 +19,14 @@ type DettaglioEventoProps = {
 };
 
 const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => {
+  const navigation = useNavigation<any>();
+
   const handleRichiediPress = () => {
-    console.log('Partecipazione richiesta all’evento');
+    if (evento.titolo === 'Portici di Carta') {
+      navigation.navigate('Portici');
+    } else {
+      console.log('Partecipazione richiesta all’evento');
+    }
   };
 
   const hasRating = typeof evento.rating === 'number' && evento.rating >= 0;
@@ -57,7 +64,7 @@ const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => 
         />
 
         <Text style={styles.title}>{evento.titolo}</Text>
-        <Text style={styles.category}>{evento.categoria}</Text>
+        <Text style={styles.category}>{evento.categoriaE}</Text>
 
         <Text style={styles.titleDescription}>Descrizione</Text>
         <Text style={styles.description}>{evento.descrizione}</Text>

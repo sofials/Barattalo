@@ -2,21 +2,63 @@ import React, { useState, useRef } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ArrowRight from './icons/arrowRight.svg';
-import CameraDoodle from './icons/books.svg';
 
-const gianniMessage = "Ciao, saresti disponibile per dare delle ripetizioni di italiano a mio figlio? Frequenta la terza media e ha un po’ di difficoltà.";
+const groupMessages = [
+  {
+    id: 1,
+    text: "Ciao a tutti! Chi viene a Portici di Carta domani?",
+    from: 'Anna',
+    avatar: require('./assets/anna.jpg'),
+  },
+  {
+    id: 2,
+    text: "Io ci sono! Vi va un caffè prima dell’evento?",
+    from: 'Luca',
+    avatar: require('./assets/gianni.png'),
+  },
+  {
+    id: 3,
+    text: "Ottima idea! A che ora ci troviamo?",
+    from: 'Anna',
+    avatar: require('./assets/anna.jpg'),
+  },
+  {
+    id: 4,
+    text: "Direi alle 9:30 davanti all’ingresso principale, che ne dite?",
+    from: 'Giulia',
+    avatar: require('./assets/giulia.jpg'),
+  },
+  {
+    id: 5,
+    text: "Perfetto per me! Porto anche una mia amica.",
+    from: 'Luca',
+    avatar: require('./assets/gianni.png'),
+  },
+  {
+    id: 6,
+    text: "A domani allora! Non vedo l’ora 😊",
+    from: 'Giulia',
+    avatar: require('./assets/giulia.jpg'),
+  },
+];
 
-const Chat: React.FC = () => {
+const Portici: React.FC = () => {
   const navigation = useNavigation();
-  const [messages, setMessages] = useState([
-    { id: 1, text: gianniMessage, from: 'gianni' }
-  ]);
+  const [messages, setMessages] = useState(groupMessages);
   const [input, setInput] = useState('');
   const scrollViewRef = useRef<ScrollView>(null);
 
   const sendMessage = () => {
     if (input.trim() === '') return;
-    setMessages([...messages, { id: Date.now(), text: input, from: 'me' }]);
+    setMessages([
+      ...messages,
+      {
+        id: Date.now(),
+        text: input,
+        from: 'Tu',
+        avatar: require('./assets/portici.jpg'),
+      },
+    ]);
     setInput('');
     setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -31,31 +73,30 @@ const Chat: React.FC = () => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <ArrowRight width={32} height={32} />
           </TouchableOpacity>
-          <Text style={styles.title}>Chat</Text>
+          <Text style={styles.title}>Portici di Carta</Text>
         </View>
-        <CameraDoodle width={40} height={40} />
+        <Image
+          source={require('./assets/portici.jpg')}
+          style={{ width: 40, height: 40, borderRadius: 8 }}
+        />
       </View>
 
-      {/* Info Gianni */}
+      {/* Info Evento */}
       <View style={styles.infoRow}>
         <Image
-          source={require('./assets/gianni.png')}
+          source={require('./assets/portici.jpg')}
           style={styles.avatar}
         />
         <View style={{ marginLeft: 16 }}>
-          <Text style={styles.h1}>Gianni</Text>
+          <Text style={styles.h1}>Portici di Carta</Text>
           <Text style={styles.sottotitolo}>
-            ti scrive per: <Text style={{ color: '#6B53FF', fontWeight: 'bold' }}>Ripetizioni di Italiano</Text>
+            Chat di gruppo per l’evento
           </Text>
         </View>
       </View>
 
       {/* Divider */}
-      <Image
-        source={require('./icons/divider.png')}
-        style={{ width: '100%', height: 16, marginBottom: 8 }}
-        resizeMode="contain"
-      />
+      <View style={{ width: '100%', height: 16, marginBottom: 8, backgroundColor: '#D8D1FF' }} />
 
       {/* Chat */}
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -64,29 +105,15 @@ const Chat: React.FC = () => {
           contentContainerStyle={{ paddingVertical: 16 }}
           ref={scrollViewRef}
         >
-          {messages.map((msg, idx) =>
-            msg.from === 'gianni' ? (
-              <View key={msg.id}>
-                <View style={[
-                  styles.baloonGianni,
-                  idx === 0 && { marginBottom: -30 } // margine minimo sotto il baloon
-                ]}>
-                  <Text style={styles.textGianni}>{msg.text}</Text>
-                </View>
-                {idx === 0 && (
-                  <Image
-                    source={require('./icons/reserving.png')}
-                    style={{ width: 180, height: 180, marginBottom: 0, marginTop: 0, alignSelf: 'flex-start' }}
-                    resizeMode="contain"
-                  />
-                )}
+          {messages.map((msg, idx) => (
+            <View key={msg.id} style={msg.from === 'Tu' ? styles.baloonMe : styles.baloonOther}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image source={msg.avatar} style={styles.userAvatar} />
+                <Text style={styles.userName}>{msg.from}</Text>
               </View>
-            ) : (
-              <View key={msg.id} style={styles.baloonMe}>
-                <Text style={styles.textMe}>{msg.text}</Text>
-              </View>
-            )
-          )}
+              <Text style={msg.from === 'Tu' ? styles.textMe : styles.textOther}>{msg.text}</Text>
+            </View>
+          ))}
         </ScrollView>
 
         {/* Input per inviare messaggi */}
@@ -122,10 +149,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 'bold',
     marginLeft: 16,
-    color: '#6B53FF',
+    color: '#2B31BA',
   },
   infoRow: {
     flexDirection: 'row',
@@ -136,44 +163,62 @@ const styles = StyleSheet.create({
   avatar: {
     width: 64,
     height: 64,
-    borderRadius: 32,
+    borderRadius: 12,
     backgroundColor: '#eee',
   },
   h1: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#6B53FF',
+    color: '#2B31BA',
   },
   sottotitolo: {
     fontSize: 15,
     color: '#555',
     marginTop: 4,
   },
-  baloonGianni: {
+  baloonOther: {
     alignSelf: 'flex-start',
-    backgroundColor: '#FFF4F4',
+    backgroundColor: '#EBDBCD',
     borderRadius: 18,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    marginBottom: 0,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginBottom: 10,
     maxWidth: '80%',
-  },
-  textGianni: {
-    color: '#222',
-    fontSize: 16,
+    marginLeft: 0,
   },
   baloonMe: {
     alignSelf: 'flex-end',
-    backgroundColor: '#689399',
+    backgroundColor: '#D8D1FF',
     borderRadius: 18,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
     marginBottom: 10,
     maxWidth: '80%',
+    marginRight: 0,
+  },
+  textOther: {
+    color: '#2B31BA',
+    fontSize: 15,
+    marginTop: 4,
   },
   textMe: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 15,
+    marginTop: 4,
+  },
+  userAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    marginRight: 8,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#D8D1FF',
+  },
+  userName: {
+    fontWeight: 'bold',
+    color: '#2B31BA',
+    fontSize: 13,
   },
   inputRow: {
     flexDirection: 'row',
@@ -195,11 +240,11 @@ const styles = StyleSheet.create({
     color: '#222',
   },
   sendButton: {
-    backgroundColor: '#6B53FF',
+    backgroundColor: '#2B31BA',
     borderRadius: 22,
     paddingVertical: 10,
     paddingHorizontal: 18,
   },
 });
 
-export default Chat;
+export default Portici;
