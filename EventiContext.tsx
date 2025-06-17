@@ -11,6 +11,7 @@ export type Evento = {
 };
 
 export type EventoContextType = {
+  eventi: Evento[]; // <--- aggiungi questa riga
   annunci: Evento[];
   aggiungiEvento: (a: Evento) => void;
   rimuoviEvento: (titolo: string) => void;  // funzione rimuovi

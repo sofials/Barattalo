@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, createContext, ReactNode } from 'react';
 import {
   View,
   Text,
@@ -17,16 +17,18 @@ import DettaglioEvento from './DettaglioEvento';
 const immagineDefault = require('./images/barattalo.jpeg');
 const { width: screenWidth } = Dimensions.get('window');
 
+// Usa solo il tipo Evento importato da EventiContext
+
 const Eventi: React.FC = () => {
   const { eventi } = useEventi();
   const [search, setSearch] = useState('');
   const [filtroCategorieE, setFiltroCategorieE] = useState<string[]>([]);
   const [filtroDistanza, setFiltroDistanza] = useState<number>(50);
   const [showFiltri, setShowFiltri] = useState(false);
-  const [eventoSelezionato, setEventoSelezionato] = useState<Evento | null>(null);
+  const [eventoSelezionato, setEventoSelezionato] = useState<(Evento & { descrizione: string; puntiAnnuncio: number }) | null>(null);
 
   const filteredEventi = () =>
-    eventi.filter(a => {
+    eventi.filter((a: Evento) => {
       if (a.isNew) return false;
       if (filtroCategorieE.length > 0 && !filtroCategorieE.includes(a.categoriaE)) return false;
       if (!a.titolo.toLowerCase().includes(search.toLowerCase())) return false;
@@ -39,8 +41,8 @@ const Eventi: React.FC = () => {
   if (eventoSelezionato) {
     return (
       <DettaglioEvento
-        evento={eventoSelezionato}
-        onBack={() => setEventoSelezionato(null)}
+      evento={eventoSelezionato}
+      onBack={() => setEventoSelezionato(null)}
       />
     );
   }
@@ -87,7 +89,7 @@ const Eventi: React.FC = () => {
           if (filtered.length === 0) return null;
 
           return (
-            <View key={categoriaE} style={styles.categoriaE}>
+            <View key={categoriaE} style={styles.categoria}>
               <Text style={styles.categoriaTitolo}>{categoriaE}</Text>
               <ScrollView
                 horizontal
@@ -95,7 +97,7 @@ const Eventi: React.FC = () => {
                 contentContainerStyle={styles.cardList}
                 style={{ height: 180 }}  // Altezza fissa per contenitore ScrollView orizzontale
               >
-                {filtered.map((a, i) => {
+                {filtered.map((a, i: number) => {
                   const isDefaultImage = a.immagine === immagineDefault;
                   // Passa rating come dato interno, anche se non mostrato
                   const rating = typeof a.rating === 'number' ? a.rating : 4;
@@ -104,7 +106,13 @@ const Eventi: React.FC = () => {
                     <TouchableOpacity
                       key={i}
                       style={styles.card}
-                      onPress={() => setEventoSelezionato(a)}
+                      onPress={() =>
+                        setEventoSelezionato({
+                          ...a,
+                          descrizione: a.descrizione ?? '',
+                          puntiAnnuncio: a.rating ?? 0,
+                        })
+                      }
                       // rating è disponibile qui se serve per qualche logica futura
                       // ad esempio: data-rating={rating}
                     >
@@ -130,7 +138,7 @@ const Eventi: React.FC = () => {
         initialDistance={filtroDistanza}
         onClose={() => setShowFiltri(false)}
         onApply={(selectedCategories, distanceKm) => {
-          setFiltroCategorieE(selectedCategoriesE);
+          setFiltroCategorieE(selectedCategories);
           setFiltroDistanza(distanceKm);
           setShowFiltri(false);
         }}
@@ -140,3 +148,20 @@ const Eventi: React.FC = () => {
 };
 
 export default Eventi;
+
+export type EventoContextType = {
+  eventi: Evento[];
+  // altre proprietà eventualmente già presenti
+};
+
+export const EventoContext = createContext<EventoContextType | undefined>(undefined);
+
+export const EventoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [eventi, setEventi] = React.useState<Evento[]>([]); // oppure il tuo stato eventi
+
+  return (
+    <EventoContext.Provider value={{ eventi }}>
+      {children}
+    </EventoContext.Provider>
+  );
+};
