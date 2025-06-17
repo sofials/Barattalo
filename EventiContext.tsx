@@ -50,7 +50,7 @@ const eventiDefault: Evento[] = setDefaultRating([
   },
   ...setIsNewFalse([
     {
-      titolo: 'Letture per giovani',
+      titolo: 'Portici di carta',
       categoriaE: 'Libri e Lettura',
       immagine: require('./icons/libri.jpg'),
       km: 20
