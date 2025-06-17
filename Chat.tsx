@@ -67,14 +67,17 @@ const Chat: React.FC = () => {
           {messages.map((msg, idx) =>
             msg.from === 'gianni' ? (
               <View key={msg.id}>
-                <View style={styles.baloonGianni}>
+                <View style={[
+                  styles.baloonGianni,
+                  idx === 0 && { marginBottom: -30 } // margine minimo sotto il baloon
+                ]}>
                   <Text style={styles.textGianni}>{msg.text}</Text>
                 </View>
-                {/* Mostra il PNG solo sotto il primo messaggio di Gianni */}
                 {idx === 0 && (
                   <Image
                     source={require('./icons/reserving.png')}
-                    resizeMode="cover"
+                    style={{ width: 180, height: 180, marginBottom: 0, marginTop: 0, alignSelf: 'flex-start' }}
+                    resizeMode="contain"
                   />
                 )}
               </View>
@@ -152,7 +155,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     paddingVertical: 12,
     paddingHorizontal: 18,
-    marginBottom: 10,
+    marginBottom: 0,
     maxWidth: '80%',
   },
   textGianni: {
