@@ -130,8 +130,8 @@ export const EventoProvider = ({ children }: { children: ReactNode }) => {
     </EventoContext.Provider>
   );
 };
-export const useEventi = (): EventoContextTypeContextType => {
-  const context = useContext(EventoContext);
-  if (!context) throw new Error('useEventi must be used inside EventoProvider');
-  return context;
+  export const useEventi = (): EventoContextType => {
+    const context = useContext(EventoContext);
+    if (!context) throw new Error('useEventi must be used inside EventoProvider');
+    return context;
 };
