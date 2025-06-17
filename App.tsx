@@ -6,12 +6,14 @@ import Inbox from './Inbox';
 import Chat from './Chat';
 import Rating from './Rating'
 import { AnnuncioProvider } from './AnnunciContext'; 
+import { EventoProvider } from './EventiContext'; // percorso corretto al tuo provider
 
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
   return (
   <AnnuncioProvider>
+    <EventoProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="MainTabs" component={MainTabs} />
@@ -20,6 +22,7 @@ const App: React.FC = () => {
         <Stack.Screen name="Rating" component={Rating} />
       </Stack.Navigator>
     </NavigationContainer>
+    </EventoProvider>
     </AnnuncioProvider>
   );
 };
