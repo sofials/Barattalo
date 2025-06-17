@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 
   titoloTesto: {
     fontWeight: 'bold',
-    color: '#3B82F6', // un bel blu per differenziare dagli annunci
+    color: '#6B53FF',
     fontSize: 26,
     marginLeft: 12,
     lineHeight: 32,
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   searchBox: {
     width: '100%',
     maxWidth: 340,
-    backgroundColor: '#e0ecff',
+    backgroundColor: '#d8d1ff',
     borderRadius: 12,
     padding: 10,
     elevation: 4,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 42,
     borderWidth: 1,
-    borderColor: '#90b4f0',
+    borderColor: '#a99be6',
     borderRadius: 8,
     paddingHorizontal: 10,
     marginRight: 8,
@@ -73,14 +73,14 @@ const styles = StyleSheet.create({
   },
 
   filterButton: {
-    backgroundColor: '#e0ecff',
+    backgroundColor: '#d8d1ff',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
   },
 
   filterButtonText: {
-    color: '#1D4ED8',
+    color: '#2B31BA',
     fontWeight: 'bold',
   },
 
@@ -96,13 +96,13 @@ const styles = StyleSheet.create({
   categoriaTitolo: {
     fontWeight: 'bold',
     fontSize: 18,
-    color: '#1D4ED8',
+    color: '#2B31BA',
     marginBottom: 12,
   },
 
   cardList: {
     paddingLeft: 4,
-    alignItems: 'center',
+    alignItems: 'center', // centrare verticalmente le card nello ScrollView orizzontale
   },
 
   card: {

@@ -1,65 +1,78 @@
-import { StyleSheet, Dimensions } from 'react-native';
-
-const { width } = Dimensions.get('window');
+// DettaglioEvento.styles.ts
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
+    padding: 20,
     backgroundColor: '#fff',
   },
-
   backButton: {
-    paddingVertical: 14,
-  },
-
-  backButtonText: {
-    color: '#1D4ED8',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-
-  image: {
-    width: '100%',
-    height: 240,
-    borderRadius: 12,
     marginBottom: 20,
-    backgroundColor: '#eee',
+    paddingTop: 20,
   },
-
+  backButtonText: {
+    fontSize: 26,
+    color: '#6B53FF',
+    fontWeight: 'bold',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 12,
+    alignSelf: 'center',
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#111',
-    marginBottom: 6,
-  },
-
-  category: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#3B82F6',
-    marginBottom: 20,
-  },
-
-  titleDescription: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#444',
-    marginTop: 12,
+    color: '#000000',
+    textAlign: 'center',
     marginBottom: 8,
   },
-
-  description: {
-    fontSize: 15,
-    color: '#333',
-    lineHeight: 22,
+  category: {
+    fontSize: 16,
+    color: '#6B53FF',
+    marginBottom: 6,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
-
+  titleDescription: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'left',
+  },
+  description: {
+    fontSize: 16,
+    color: '#808080',
+  },
   richiediButton: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#dce9ff',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
+    bottom: 20,
+    left: '50%',
+    width: 150,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    backgroundColor: '#d8d1ff',
+    borderRadius: 30,
+    elevation: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    transform: [{ translateX: -75 }],
+  },
+  richiediButtonText: {
+    color: '#2B31BA',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  richiediButtonPoints: {
+    color: '#2B31BA',
+    fontSize: 14,
+    marginTop: 4,
+  },
+});
+
+export default styles;
