@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, ImageSourcePropType } from 'react-native';
-import styles from './DettaglioEvento.styles'; // Puoi mantenerlo o crearne uno nuovo per eventi
+import { useNavigation } from '@react-navigation/native';
+import styles from './DettaglioEvento.styles';
 
 export type Evento = {
   titolo: string;
@@ -18,8 +19,14 @@ type DettaglioEventoProps = {
 };
 
 const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => {
+  const navigation = useNavigation<any>();
+
   const handleRichiediPress = () => {
-    console.log('Partecipazione richiesta all’evento');
+    if (evento.titolo === 'Portici di Carta') {
+      navigation.navigate('Portici');
+    } else {
+      console.log('Partecipazione richiesta all’evento');
+    }
   };
 
   const hasRating = typeof evento.rating === 'number' && evento.rating >= 0;

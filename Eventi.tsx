@@ -13,6 +13,8 @@ import styles from './Eventi.styles';
 import CameraDoodle from './icons/books.svg';
 import Filtri from './Filtri';
 import DettaglioEvento from './DettaglioEvento';
+import { useNavigation } from '@react-navigation/native';
+import Portici from './Portici'; // Assicurati di importare il componente Portici
 
 const immagineDefault = require('./images/barattalo.jpeg');
 const { width: screenWidth } = Dimensions.get('window');
@@ -26,6 +28,7 @@ const Eventi: React.FC = () => {
   const [filtroDistanza, setFiltroDistanza] = useState<number>(50);
   const [showFiltri, setShowFiltri] = useState(false);
   const [eventoSelezionato, setEventoSelezionato] = useState<(Evento & { descrizione: string; puntiAnnuncio: number }) | null>(null);
+  const navigation = useNavigation();
 
   const filteredEventi = () =>
     eventi.filter((a: Evento) => {
@@ -53,7 +56,7 @@ const Eventi: React.FC = () => {
       <View style={styles.headerFixed}>
         <View style={styles.titoloWrapper}>
           <CameraDoodle width={40} height={40} />
-          <Text style={styles.titoloTesto}>Annunci</Text>
+          <Text style={styles.titoloTesto}>Eventi</Text>
         </View>
 
         <View style={styles.searchWrapper}>
@@ -99,7 +102,6 @@ const Eventi: React.FC = () => {
               >
                 {filtered.map((a, i: number) => {
                   const isDefaultImage = a.immagine === immagineDefault;
-                  // Passa rating come dato interno, anche se non mostrato
                   const rating = typeof a.rating === 'number' ? a.rating : 4;
 
                   return (
@@ -113,8 +115,6 @@ const Eventi: React.FC = () => {
                           puntiAnnuncio: a.rating ?? 0,
                         })
                       }
-                      // rating è disponibile qui se serve per qualche logica futura
-                      // ad esempio: data-rating={rating}
                     >
                       <Image
                         source={a.immagine ?? immagineDefault}
@@ -122,7 +122,6 @@ const Eventi: React.FC = () => {
                         resizeMode={isDefaultImage ? 'contain' : 'cover'}
                       />
                       <Text style={styles.cardTitle}>{a.titolo}</Text>
-                      {/* rating non mostrato */}
                     </TouchableOpacity>
                   );
                 })}

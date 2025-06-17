@@ -108,16 +108,23 @@ const Inbox: React.FC = () => {
           <View style={{ width: '100%' }}>
             {messages.map((msg, idx) => {
               const isFirst = idx === 0;
-              const MessageWrapper = isFirst ? TouchableOpacity : View;
-              const wrapperProps = isFirst
-                ? {
-                    onPress: () => {
-                      setGianniRead(true);
-                      navigation.navigate('Chat');
-                    },
-                    activeOpacity: 0.7,
-                  }
-                : {};
+              const isPortici = msg.sender === 'Portici di Carta';
+              const MessageWrapper = (isFirst || isPortici) ? TouchableOpacity : View;
+              const wrapperProps =
+                isFirst
+                  ? {
+                      onPress: () => {
+                        setGianniRead(true);
+                        navigation.navigate('Chat');
+                      },
+                      activeOpacity: 0.7,
+                    }
+                  : isPortici
+                  ? {
+                      onPress: () => navigation.navigate('Portici'),
+                      activeOpacity: 0.7,
+                    }
+                  : {};
 
               return (
                 <MessageWrapper

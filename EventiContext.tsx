@@ -1,18 +1,21 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { ImageSourcePropType } from 'react-native';
+import { Annuncio } from './AnnunciContext';
+import { useNavigation } from '@react-navigation/native';
 
 export type Evento = {
   titolo: string
   categoriaE: string;
   immagine?: ImageSourcePropType;
+  descrizione?: string;
   km?: number;
   isNew?: boolean;
   rating?: number;
 };
 
 export type EventoContextType = {
-  eventi: Evento[]; // <--- aggiungi questa riga
-  annunci: Evento[];
+  eventi: Evento[];
+  annunci: Annuncio[];
   aggiungiEvento: (a: Evento) => void;
   rimuoviEvento: (titolo: string) => void;  // funzione rimuovi
 };
@@ -47,60 +50,67 @@ const eventiDefault: Evento[] = setDefaultRating([
     categoriaE: 'Libri e Lettura',
     immagine: require('./icons/inlove.jpg'),
     km: 40,
-    isNew: true, 
+    isNew: true,
+    descrizione: 'Un viaggio tra le opere di Shakespeare, tra amore e passione, con letture e interpretazioni dal vivo.',
   },
   ...setIsNewFalse([
-    {
-      titolo: 'Portici di carta',
-      categoriaE: 'Libri e Lettura',
-      immagine: require('./icons/libri.jpg'),
-      km: 20
-    },
     {
       titolo: 'Horror in prima linea',
       categoriaE: 'Libri e Lettura',
       immagine: require('./icons/aiuto.jpg'),
-      km: 2
-
+      km: 2,
+      descrizione: 'Letture ad alta tensione per gli amanti del brivido, tra romanzi e racconti horror.',
     },
     {
       titolo: 'Birre artigianali venete',
       categoriaE: 'Apprendimento',
       immagine: require('./icons/birre.jpg'),
-      km: 35
+      km: 35,
+      descrizione: 'Degustazione e scoperta delle migliori birre artigianali del Veneto, con esperti birrai.',
     },
     {
       titolo: 'Formaggi di capra',
       categoriaE: 'Degustazioni',
       immagine: require('./icons/capra.jpg'),
-      km: 15
+      km: 15,
+      descrizione: 'Assaggio guidato di formaggi di capra locali, tra tradizione e innovazione.',
     },
     {
       titolo: 'Grappa per tutti',
       categoriaE: 'Degustazione',
       immagine: require('./icons/grappa.jpg'),
-      km: 5
-
+      km: 5,
+      descrizione: 'Un percorso tra le migliori grappe italiane, con degustazione e spiegazione delle tecniche di produzione.',
     },
     {
       titolo: 'Western',
       categoriaE: 'Film e Cinema',
       immagine: require('./icons/west.jpg'),
-      km: 4
-
+      km: 4,
+      descrizione: 'Proiezione di grandi classici del cinema western, per rivivere le emozioni del Far West.',
     },
     {
       titolo: 'Dario Argento',
       categoriaE: 'Film e Cinema ',
       immagine: require('./icons/dario.jpg'),
-
-      km: 6
+      km: 6,
+      descrizione: 'Omaggio al maestro del brivido italiano con la visione dei suoi film più celebri.',
     },
     {
       titolo: 'Cuori bollenti',
       categoriaE: 'Film e Cinema',
       immagine: require('./icons/cuori.jpg'),
-      km: 96
+      km: 96,
+      descrizione: 'Una rassegna di film romantici per scaldare il cuore, tra passioni e storie indimenticabili.',
+    },
+    {
+      titolo: 'Portici di Carta',
+      categoriaE: 'Libri e Lettura',
+      immagine: require('./assets/portici.jpg'),
+      km: 10,
+      descrizione: 'Vieni a scoprire una montagna di libri sotto i portici di Torino!',
+      isNew: true,
+      rating: 5,
     }
   ]),
 ]);
@@ -126,7 +136,7 @@ export const EventoProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <EventoContext.Provider value={{ eventi, aggiungiEvento, rimuoviEvento }}>
+    <EventoContext.Provider value={{ eventi, annunci: [], aggiungiEvento, rimuoviEvento }}>
       {children}
     </EventoContext.Provider>
   );
