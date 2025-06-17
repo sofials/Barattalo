@@ -18,12 +18,11 @@ const immagineDefault = require('./images/barattalo.jpeg');
 const { width: screenWidth } = Dimensions.get('window');
 
 const Eventi: React.FC = () => {
-  const { annunci } = useEventi();
   const [search, setSearch] = useState('');
   const [filtroCategorie, setFiltroCategorie] = useState<string[]>([]);
   const [filtroDistanza, setFiltroDistanza] = useState<number>(50);
   const [showFiltri, setShowFiltri] = useState(false);
-  const [annuncioSelezionato, setEventoSelezionato] = useState<Evento | null>(null);
+  const [eventoSelezionato, setEventoSelezionato] = useState<Evento | null>(null);
 
   const filteredEventi = () =>
     eventi.filter(a => {
@@ -39,7 +38,7 @@ const Eventi: React.FC = () => {
   if (eventoSelezionato) {
     return (
       <DettaglioEvento
-        evento={annuncioSelezionato}
+        evento={eventoSelezionato}
         onBack={() => setEventoSelezionato(null)}
       />
     );
@@ -77,64 +76,7 @@ const Eventi: React.FC = () => {
         </View>
       </View>
 
-      {/* Lista annunci */}
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={{ paddingBottom: 100, paddingTop: 220 }}
-      >
-        {categorieDaMostrare.map(categoria => {
-          const filtered = filteredEventi().filter(a => a.categoria === categoria);
-          if (filtered.length === 0) return null;
-
-          return (
-            <View key={categoria} style={styles.categoria}>
-              <Text style={styles.categoriaTitolo}>{categoria}</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.cardList}
-                style={{ height: 180 }}  // Altezza fissa per contenitore ScrollView orizzontale
-              >
-                {filtered.map((a, i) => {
-                  const isDefaultImage = a.immagine === immagineDefault;
-                  // Passa rating come dato interno, anche se non mostrato
-                  const rating = typeof a.rating === 'number' ? a.rating : 4;
-
-                  return (
-                    <TouchableOpacity
-                      key={i}
-                      style={styles.card}
-                      onPress={() => setEventoSelezionato(a)}
-                      // rating è disponibile qui se serve per qualche logica futura
-                      // ad esempio: data-rating={rating}
-                    >
-                      <Image
-                        source={a.immagine ?? immagineDefault}
-                        style={isDefaultImage ? styles.cardImageDefault : styles.cardImage}
-                        resizeMode={isDefaultImage ? 'contain' : 'cover'}
-                      />
-                      <Text style={styles.cardTitle}>{a.titolo}</Text>
-                      {/* rating non mostrato */}
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
-            </View>
-          );
-        })}
-      </ScrollView>
-
-      <Filtri
-        visible={showFiltri}
-        initialCategories={filtroCategorie}
-        initialDistance={filtroDistanza}
-        onClose={() => setShowFiltri(false)}
-        onApply={(selectedCategories, distanceKm) => {
-          setFiltroCategorie(selectedCategories);
-          setFiltroDistanza(distanceKm);
-          setShowFiltri(false);
-        }}
-      />
+    
     </View>
   );
 };

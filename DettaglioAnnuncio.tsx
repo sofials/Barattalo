@@ -51,7 +51,7 @@ const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => 
         </TouchableOpacity>
 
         <Image
-          source={evento.immagine ?? require('./images/evento-default.jpg')}
+          source={evento.immagine ?? require('./images/barattalo.jpeg')}
           style={styles.image}
           resizeMode="cover"
         />

@@ -52,53 +52,53 @@ const eventiDefault: Evento[] = setDefaultRating([
     {
       titolo: 'Letture per giovani',
       categoria: 'Libri e Lettura',
-      immagine: require('./images/libir.jpg'),
+      immagine: require('./icons/libri.jpg'),
       km: 20
     },
     {
       titolo: 'Horror in prima linea',
       categoria: 'Libri e Lettura',
-      immagine: require('./images/aiuto.jpg'),
+      immagine: require('./icons/aiuto.jpg'),
       km: 2
 
     },
     {
       titolo: 'Birre artigianali venete',
       categoria: 'Apprendimento',
-      immagine: require('./images/birre.jpeg'),
+      immagine: require('./icons/birre.jpg'),
       km: 35
     },
     {
       titolo: 'Formaggi di capra',
       categoria: 'Degustazioni',
-      immagine: require('./images/capra.jpg'),
+      immagine: require('./icons/capra.jpg'),
       km: 15
     },
     {
       titolo: 'Grappa per tutti',
       categoria: 'Degustazione',
-      immagine: require('./images/grappa.jpg'),
+      immagine: require('./icons/grappa.jpg'),
       km: 5
 
     },
     {
       titolo: 'Western',
       categoria: 'Film e Cinema',
-      immagine: require('./images/west.jpeg'),
+      immagine: require('./icons/west.jpg'),
       km: 4
 
     },
     {
       titolo: 'Dario Argento',
       categoria: 'Film e Cinema ',
-      immagine: require('./images/dario.jpeg'),
+      immagine: require('./icons/dario.jpg'),
 
       km: 6
     },
     {
       titolo: 'Cuori bollenti',
       categoria: 'Film e Cinema',
-      immagine: require('./images/cuori.png'),
+      immagine: require('./icons/cuori.jpg'),
       km: 96
     }
   ]),
@@ -131,8 +131,4 @@ export const EventoProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useEventi = (): EventoContextType => {
-  const context = useContext(EventoContext);
-  if (!context) throw new Error('useAnnunci must be used inside AnnuncioProvider');
-  return context;
-};
+export default EventoContext
