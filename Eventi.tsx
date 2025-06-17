@@ -1,4 +1,4 @@
-import React, { useState, createContext, ReactNode } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,44 +8,41 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { useEventi, categoriesE, Evento } from './EventiContext';
+import { useEventi, categorie, Evento } from './EventiContext';
 import styles from './Eventi.styles';
 import CameraDoodle from './icons/books.svg';
-import Filtri from './Filtri';
+import FiltriEventi from './FiltriEventi';
 import DettaglioEvento from './DettaglioEvento';
 import { useNavigation } from '@react-navigation/native';
-import Portici from './Portici'; // Assicurati di importare il componente Portici
+import Portici from './Portici';
 
 const immagineDefault = require('./images/barattalo.jpeg');
 const { width: screenWidth } = Dimensions.get('window');
 
-// Usa solo il tipo Evento importato da EventiContext
-
 const Eventi: React.FC = () => {
   const { eventi } = useEventi();
   const [search, setSearch] = useState('');
-  const [filtroCategorieE, setFiltroCategorieE] = useState<string[]>([]);
+  const [filtroCategorie, setFiltroCategorie] = useState<string[]>([]);
   const [filtroDistanza, setFiltroDistanza] = useState<number>(50);
   const [showFiltri, setShowFiltri] = useState(false);
-  const [eventoSelezionato, setEventoSelezionato] = useState<(Evento & { descrizione: string; puntiAnnuncio: number }) | null>(null);
+  const [eventoSelezionato, setEventoSelezionato] = useState<Evento | null>(null);
   const navigation = useNavigation();
 
   const filteredEventi = () =>
     eventi.filter((a: Evento) => {
-      if (a.isNew) return false;
-      if (filtroCategorieE.length > 0 && !filtroCategorieE.includes(a.categoriaE)) return false;
+      if (filtroCategorie.length > 0 && !filtroCategorie.includes(a.categoria)) return false;
       if (!a.titolo.toLowerCase().includes(search.toLowerCase())) return false;
       if (a.km !== undefined && a.km > filtroDistanza) return false;
       return true;
     });
 
-  const categorieEDaMostrare = filtroCategorieE.length > 0 ? filtroCategorieE : categoriesE;
+  const categorieDaMostrare = filtroCategorie.length > 0 ? filtroCategorie : categorie;
 
   if (eventoSelezionato) {
     return (
       <DettaglioEvento
-      evento={eventoSelezionato}
-      onBack={() => setEventoSelezionato(null)}
+        evento={eventoSelezionato}
+        onBack={() => setEventoSelezionato(null)}
       />
     );
   }
@@ -82,39 +79,32 @@ const Eventi: React.FC = () => {
         </View>
       </View>
 
-      {/* Lista annunci */}
+      {/* Lista eventi */}
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ paddingBottom: 100, paddingTop: 220 }}
       >
-        {categorieEDaMostrare.map(categoriaE => {
-          const filtered = filteredEventi().filter(a => a.categoriaE === categoriaE);
+        {categorieDaMostrare.map(categoria => {
+          const filtered = filteredEventi().filter(a => a.categoria === categoria);
           if (filtered.length === 0) return null;
 
           return (
-            <View key={categoriaE} style={styles.categoria}>
-              <Text style={styles.categoriaTitolo}>{categoriaE}</Text>
+            <View key={categoria} style={styles.categoria}>
+              <Text style={styles.categoriaTitolo}>{categoria}</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.cardList}
-                style={{ height: 180 }}  // Altezza fissa per contenitore ScrollView orizzontale
+                style={{ height: 180 }}
               >
                 {filtered.map((a, i: number) => {
                   const isDefaultImage = a.immagine === immagineDefault;
-                  const rating = typeof a.rating === 'number' ? a.rating : 4;
 
                   return (
                     <TouchableOpacity
                       key={i}
                       style={styles.card}
-                      onPress={() =>
-                        setEventoSelezionato({
-                          ...a,
-                          descrizione: a.descrizione ?? '',
-                          puntiAnnuncio: a.rating ?? 0,
-                        })
-                      }
+                      onPress={() => setEventoSelezionato(a)}
                     >
                       <Image
                         source={a.immagine ?? immagineDefault}
@@ -131,13 +121,13 @@ const Eventi: React.FC = () => {
         })}
       </ScrollView>
 
-      <Filtri
+      <FiltriEventi
         visible={showFiltri}
-        initialCategories={filtroCategorieE}
+        initialCategories={filtroCategorie}
         initialDistance={filtroDistanza}
         onClose={() => setShowFiltri(false)}
         onApply={(selectedCategories, distanceKm) => {
-          setFiltroCategorieE(selectedCategories);
+          setFiltroCategorie(selectedCategories);
           setFiltroDistanza(distanceKm);
           setShowFiltri(false);
         }}
@@ -147,20 +137,3 @@ const Eventi: React.FC = () => {
 };
 
 export default Eventi;
-
-export type EventoContextType = {
-  eventi: Evento[];
-  // altre proprietà eventualmente già presenti
-};
-
-export const EventoContext = createContext<EventoContextType | undefined>(undefined);
-
-export const EventoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [eventi, setEventi] = React.useState<Evento[]>([]); // oppure il tuo stato eventi
-
-  return (
-    <EventoContext.Provider value={{ eventi }}>
-      {children}
-    </EventoContext.Provider>
-  );
-};

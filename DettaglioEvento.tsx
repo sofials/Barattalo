@@ -1,16 +1,21 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, ImageSourcePropType } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  ImageSourcePropType,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from './DettaglioEvento.styles';
 
 export type Evento = {
   titolo: string;
   descrizione: string;
-  categoriaE: string;
+  categoria: string;
   immagine?: ImageSourcePropType;
   km?: number;
-  puntiAnnuncio: number;
-  rating?: number;
 };
 
 type DettaglioEventoProps = {
@@ -29,27 +34,6 @@ const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => 
     }
   };
 
-  const hasRating = typeof evento.rating === 'number' && evento.rating >= 0;
-
-  const renderStars = (rating?: number) => {
-    if (typeof rating !== 'number' || rating < 0) return null;
-
-    const starColor = styles.richiediButton.backgroundColor;
-
-    return (
-      <View style={{ flexDirection: 'row', marginVertical: 5 }}>
-        {[...Array(5)].map((_, i) => (
-          <Text
-            key={i}
-            style={{ color: i < rating ? starColor : 'lightgray', fontSize: 20, marginRight: 2 }}
-          >
-            ★
-          </Text>
-        ))}
-      </View>
-    );
-  };
-
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 140 }}>
@@ -64,17 +48,10 @@ const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => 
         />
 
         <Text style={styles.title}>{evento.titolo}</Text>
-        <Text style={styles.category}>{evento.categoriaE}</Text>
+        <Text style={styles.category}>{evento.categoria}</Text>
 
         <Text style={styles.titleDescription}>Descrizione</Text>
         <Text style={styles.description}>{evento.descrizione}</Text>
-
-        {hasRating && (
-          <>
-            <Text style={styles.titleDescription}>Recensione</Text>
-            {renderStars(evento.rating)}
-          </>
-        )}
       </ScrollView>
 
       <TouchableOpacity
@@ -84,7 +61,6 @@ const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => 
       >
         <View style={{ alignItems: 'center' }}>
           <Text style={styles.richiediButtonText}>Partecipa</Text>
-          <Text style={styles.richiediButtonPoints}>{evento.puntiAnnuncio} punti</Text>
         </View>
       </TouchableOpacity>
     </View>

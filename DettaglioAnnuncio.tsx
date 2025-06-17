@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, ImageSourcePropType } from 'react-native';
-import styles from './DettaglioAnnuncio.styles'; // Puoi mantenerlo o crearne uno nuovo per eventi
+import styles from './DettaglioAnnuncio.styles';
 
-export type Evento = {
+export type Annuncio = {
   titolo: string;
   descrizione: string;
   categoria: string;
@@ -12,22 +12,26 @@ export type Evento = {
   rating?: number;
 };
 
-type DettaglioEventoProps = {
-  evento: Evento;
+type DettaglioAnnuncioProps = {
+  annuncio: Annuncio;
   onBack: () => void;
 };
 
-const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => {
+const DettaglioAnnuncio: React.FC<DettaglioAnnuncioProps> = ({ annuncio, onBack }) => {
   const handleRichiediPress = () => {
-    console.log('Partecipazione richiesta all’evento');
+    console.log("Richiesta inviata al proprietario");
   };
 
-  const hasRating = typeof evento.rating === 'number' && evento.rating >= 0;
+  // Variabile booleana che indica se il rating è valido
+  const hasRating = typeof annuncio.rating === 'number' && annuncio.rating >= 0;
 
+  // Funzione per mostrare le stelle piene o vuote con colore dello sfondo del bottone
   const renderStars = (rating?: number) => {
-    if (typeof rating !== 'number' || rating < 0) return null;
+    if (typeof rating !== "number" || rating < 0) {
+      return null;
+    }
 
-    const starColor = styles.richiediButton.backgroundColor;
+    const starColor = styles.richiediButton.backgroundColor; // '#d8d1ff'
 
     return (
       <View style={{ flexDirection: 'row', marginVertical: 5 }}>
@@ -47,25 +51,25 @@ const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => 
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 140 }}>
         <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Text style={styles.backButtonText}>← Eventi</Text>
+          <Text style={styles.backButtonText}>← Annunci</Text>
         </TouchableOpacity>
 
         <Image
-          source={evento.immagine ?? require('./images/barattalo.jpeg')}
+          source={annuncio.immagine ?? require('./images/barattalo.jpeg')}
           style={styles.image}
           resizeMode="cover"
         />
 
-        <Text style={styles.title}>{evento.titolo}</Text>
-        <Text style={styles.category}>{evento.categoria}</Text>
+        <Text style={styles.title}>{annuncio.titolo}</Text>
+        <Text style={styles.category}>{annuncio.categoria}</Text>
 
         <Text style={styles.titleDescription}>Descrizione</Text>
-        <Text style={styles.description}>{evento.descrizione}</Text>
+        <Text style={styles.description}>{annuncio.descrizione}</Text>
 
         {hasRating && (
           <>
             <Text style={styles.titleDescription}>Recensione</Text>
-            {renderStars(evento.rating)}
+            {renderStars(annuncio.rating)}
           </>
         )}
       </ScrollView>
@@ -76,12 +80,12 @@ const DettaglioEvento: React.FC<DettaglioEventoProps> = ({ evento, onBack }) => 
         activeOpacity={0.8}
       >
         <View style={{ alignItems: 'center' }}>
-          <Text style={styles.richiediButtonText}>Partecipa</Text>
-          <Text style={styles.richiediButtonPoints}>{evento.puntiAnnuncio} punti</Text>
+          <Text style={styles.richiediButtonText}>Richiedi</Text>
+          <Text style={styles.richiediButtonPoints}>{annuncio.puntiAnnuncio} punti</Text>
         </View>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default DettaglioEvento;
+export default DettaglioAnnuncio;

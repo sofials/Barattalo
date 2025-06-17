@@ -68,11 +68,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
-  richiediButtonPoints: {
-    color: '#2B31BA',
-    fontSize: 14,
-    marginTop: 4,
-  },
 });
 
 export default styles;
