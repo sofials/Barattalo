@@ -22,7 +22,7 @@ export const categorie = [
 
 const eventiDefault: Evento[] = [
   {
-    titolo: 'Shakespare in love',
+    titolo: 'Shakespeare in love',
     categoria: 'Libri e Lettura',
     immagine: require('./icons/inlove.jpg'),
     km: 40,
