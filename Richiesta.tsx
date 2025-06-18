@@ -1,19 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import ArrowRight from './icons/arrowRight.svg';
 import CameraDoodle from './icons/books.svg';
+import { usePunti } from './PuntiContext';
 
 const Richiesta: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  // Recupera il messaggio inviato dall'utente nella richiesta
+  const { togliPunti } = usePunti();
   const messaggioUtente = route.params && (route.params as any).messaggio ? (route.params as any).messaggio : '';
   const [messages, setMessages] = useState([
     { id: 1, text: messaggioUtente, from: 'me' }
   ]);
   const [input, setInput] = useState('');
   const scrollViewRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    togliPunti(30);
+  }, []);
 
   const sendMessage = () => {
     if (input.trim() === '') return;
