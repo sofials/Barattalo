@@ -73,7 +73,7 @@ const Rating: React.FC = () => {
       </View>
       <TouchableOpacity
         style={styles.sendButton}
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('Inbox')}
         activeOpacity={0.8}
       >
         <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>

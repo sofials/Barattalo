@@ -1,77 +1,137 @@
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
+import { useEventi, categorie, Evento } from './EventiContext';
 import styles from './Eventi.styles';
-import BooksIcon from './icons/books.svg';
-import Girl01 from './icons/girl01.svg';
+import CameraDoodle from './icons/books.svg';
+import FiltriEventi from './FiltriEventi';
+import DettaglioEvento from './DettaglioEvento';
+import { useNavigation } from '@react-navigation/native';
+import Portici from './Portici';
 
-const eventi = [
-  {
-    id: 1,
-    titolo: 'Portici di Carta',
-    immagine: require('./assets/portici.jpg'),
-    descrizione: 'Vieni a scoprire una montagna di libri sotto i portici di Torino!',
-  },
-  {
-    id: 2,
-    titolo: 'La Notte si Riempie di Stelle',
-    immagine: require('./assets/cinema.png'),
-    descrizione: 'Il Museo Nazionale del Cinema di Torino apre le porte per una notte speciale.',
-  },
-  {
-    id: 3,
-    titolo: 'Degustazione di vini',
-    immagine: require('./assets/vino.jpg'),
-    descrizione: 'Vieni a scoprire i migliori vini piemontesi in una serata di degustazione esclusiva.',
-  },
-];
+const immagineDefault = require('./images/barattalo.jpeg');
+const { width: screenWidth } = Dimensions.get('window');
 
-const Eventi = () => {
+const Eventi: React.FC = () => {
+  const { eventi } = useEventi();
   const [search, setSearch] = useState('');
+  const [filtroCategorie, setFiltroCategorie] = useState<string[]>([]);
+  const [filtroDistanza, setFiltroDistanza] = useState<number>(50);
+  const [showFiltri, setShowFiltri] = useState(false);
+  const [eventoSelezionato, setEventoSelezionato] = useState<Evento | null>(null);
+  const navigation = useNavigation();
 
-  const eventiFiltrati = eventi.filter(e =>
-    e.titolo.toLowerCase().includes(search.toLowerCase()) ||
-    e.descrizione.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredEventi = () =>
+    eventi.filter((a: Evento) => {
+      if (filtroCategorie.length > 0 && !filtroCategorie.includes(a.categoria)) return false;
+      if (!a.titolo.toLowerCase().includes(search.toLowerCase())) return false;
+      if (a.km !== undefined && a.km > filtroDistanza) return false;
+      return true;
+    });
+
+  const categorieDaMostrare = filtroCategorie.length > 0 ? filtroCategorie : categorie;
+
+  if (eventoSelezionato) {
+    return (
+      <DettaglioEvento
+        evento={eventoSelezionato}
+        onBack={() => setEventoSelezionato(null)}
+      />
+    );
+  }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#f9f9f9' }}>
-      {/* TopBar più in basso */}
-      <View style={styles.topBar}>
-        <BooksIcon width={40} height={40} />
-        <Text style={styles.titolo}>Eventi</Text>
+    <View style={styles.wrapper}>
+      {/* Header fisso con titolo e barra ricerca */}
+      <View style={styles.headerFixed}>
+        <View style={styles.titoloWrapper}>
+          <CameraDoodle width={40} height={40} />
+          <Text style={styles.titoloTesto}>Eventi</Text>
+        </View>
+
+        <View style={styles.searchWrapper}>
+          <View style={[styles.searchBox, { width: Math.min(340, screenWidth * 0.9) }]}>
+            <View style={styles.searchContainer}>
+              <TextInput
+                placeholder="Cerca..."
+                placeholderTextColor="#333"
+                value={search}
+                onChangeText={setSearch}
+                style={styles.searchInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+              <TouchableOpacity
+                style={styles.filterButton}
+                onPress={() => setShowFiltri(true)}
+              >
+                <Text style={styles.filterButtonText}>Filtri</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </View>
 
-      {/* Barra di ricerca subito dopo la topBar */}
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Cerca un evento..."
-        value={search}
-        onChangeText={setSearch}
-        placeholderTextColor="#222"
-      />
+      {/* Lista eventi */}
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ paddingBottom: 100, paddingTop: 220 }}
+      >
+        {categorieDaMostrare.map(categoria => {
+          const filtered = filteredEventi().filter(a => a.categoria === categoria);
+          if (filtered.length === 0) return null;
 
-      <ScrollView style={styles.eventiContainer} contentContainerStyle={{ paddingBottom: 100 }}>
-        <View style={styles.eventoSezione}>
-          {/* Sottotitolo più grande */}
-          <Text style={styles.sottotitolo}>Potrebbero interessarti:</Text>
-          {eventiFiltrati.map(evento => (
-            <View key={evento.id} style={styles.eventoItem}>
-              <Image
-                source={evento.immagine}
-                style={styles.eventoImg}
-                resizeMode="cover"
-              />
-              <View style={styles.eventoContent}>
-                <Text style={styles.eventoTesto}>{evento.titolo}</Text>
-                <Text style={styles.eventoDescrizione}>{evento.descrizione}</Text>
-              </View>
+          return (
+            <View key={categoria} style={styles.categoria}>
+              <Text style={styles.categoriaTitolo}>{categoria}</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.cardList}
+                style={{ height: 180 }}
+              >
+                {filtered.map((a, i: number) => {
+                  const isDefaultImage = a.immagine === immagineDefault;
+
+                  return (
+                    <TouchableOpacity
+                      key={i}
+                      style={styles.card}
+                      onPress={() => setEventoSelezionato(a)}
+                    >
+                      <Image
+                        source={a.immagine ?? immagineDefault}
+                        style={isDefaultImage ? styles.cardImageDefault : styles.cardImage}
+                        resizeMode={isDefaultImage ? 'contain' : 'cover'}
+                      />
+                      <Text style={styles.cardTitle}>{a.titolo}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
             </View>
-          ))}
-        </View>
+          );
+        })}
       </ScrollView>
 
-      {/* Icona in basso a destra */}
-      <Girl01 width={80} height={80} style={styles.girlIcon} />
+      <FiltriEventi
+        visible={showFiltri}
+        initialCategories={filtroCategorie}
+        initialDistance={filtroDistanza}
+        onClose={() => setShowFiltri(false)}
+        onApply={(selectedCategories, distanceKm) => {
+          setFiltroCategorie(selectedCategories);
+          setFiltroDistanza(distanceKm);
+          setShowFiltri(false);
+        }}
+      />
     </View>
   );
 };
