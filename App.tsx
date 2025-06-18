@@ -6,8 +6,11 @@ import Inbox from './Inbox';
 import Chat from './Chat';
 import Rating from './Rating'
 import Portici from './Portici';
+import Richiesta from './Richiesta';
+import Prenotazione from './Prenotazione';
 import { AnnuncioProvider } from './AnnunciContext'; 
-import { EventoProvider } from './EventiContext'; // percorso corretto al tuo provider
+import { EventoProvider } from './EventiContext';
+import { PuntiProvider } from './PuntiContext';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +18,7 @@ const App: React.FC = () => {
   return (
   <AnnuncioProvider>
     <EventoProvider>
+    <PuntiProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="MainTabs" component={MainTabs} />
@@ -22,8 +26,11 @@ const App: React.FC = () => {
         <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="Rating" component={Rating} />
         <Stack.Screen name="Portici" component={Portici}/>
+        <Stack.Screen name="Richiesta" component={Richiesta} />
+        <Stack.Screen name="Prenotazione" component={Prenotazione} />
       </Stack.Navigator>
     </NavigationContainer>
+    </PuntiProvider>
     </EventoProvider>
     </AnnuncioProvider>
   );

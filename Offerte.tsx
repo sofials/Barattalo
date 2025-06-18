@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useAnnunci, categories, Annuncio } from './AnnunciContext';
+import { usePunti } from './PuntiContext';
 import styles from './Offerte.styles';
 import CameraDoodle from './icons/books.svg';
 import Filtri from './Filtri';
@@ -19,6 +20,7 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const Offerte: React.FC = () => {
   const { annunci } = useAnnunci();
+  const { punti } = usePunti();
   const [search, setSearch] = useState('');
   const [filtroCategorie, setFiltroCategorie] = useState<string[]>([]);
   const [filtroDistanza, setFiltroDistanza] = useState<number>(50);
@@ -52,6 +54,11 @@ const Offerte: React.FC = () => {
         <View style={styles.titoloWrapper}>
           <CameraDoodle width={40} height={40} />
           <Text style={styles.titoloTesto}>Annunci</Text>
+        </View>
+        <View style={styles.puntiBox}>
+          <View style={styles.puntiRiquadro}>
+            <Text style={styles.puntiText}>{punti} punti</Text>
+          </View>
         </View>
 
         <View style={styles.searchWrapper}>
