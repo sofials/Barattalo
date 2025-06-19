@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import BlueIdea from './icons/blueIdea.svg';
 import { useAnnunci } from './AnnunciContext';
+import { usePunti } from './PuntiContext';
 import { styles } from './Profilo.styles';
 
 type Annuncio = {
@@ -51,6 +52,7 @@ const averageRating = (
 
 const Profilo: React.FC = () => {
   const { annunci, rimuoviAnnuncio } = useAnnunci();
+  const { punti, aggiungiPunti, togliPunti } = usePunti();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedAnnuncio, setSelectedAnnuncio] = useState<Annuncio | null>(null);
 
@@ -73,7 +75,7 @@ const Profilo: React.FC = () => {
           <Image source={require('./images/elio.jpg')} style={styles.avatar} />
           <Text style={styles.nome}>Elio</Text>
           <View style={styles.pointsBox}>
-            <Text style={styles.pointsText}>120 punti</Text>
+            <Text style={styles.pointsText}>{punti} punti</Text>
           </View>
         </View>
 
