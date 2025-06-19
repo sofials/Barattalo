@@ -14,6 +14,8 @@ import styles from './Offerte.styles';
 import CameraDoodle from './icons/books.svg';
 import Filtri from './Filtri';
 import DettaglioAnnuncio from './DettaglioAnnuncio';
+import Prenotazione from './Prenotazione';
+import Richiesta from './Richiesta';
 
 const immagineDefault = require('./images/barattalo.jpeg');
 const { width: screenWidth } = Dimensions.get('window');
@@ -26,6 +28,8 @@ const Offerte: React.FC = () => {
   const [filtroDistanza, setFiltroDistanza] = useState<number>(50);
   const [showFiltri, setShowFiltri] = useState(false);
   const [annuncioSelezionato, setAnnuncioSelezionato] = useState<Annuncio | null>(null);
+  const [prenotazioneAttiva, setPrenotazioneAttiva] = useState<Annuncio | null>(null);
+  const [messaggioInviato, setMessaggioInviato] = useState<string | null>(null);
 
   const filteredAnnunci = () =>
     annunci.filter(a => {
@@ -38,18 +42,45 @@ const Offerte: React.FC = () => {
 
   const categorieDaMostrare = filtroCategorie.length > 0 ? filtroCategorie : categories;
 
+  if (messaggioInviato && prenotazioneAttiva) {
+    return (
+      <Richiesta
+        messaggio={messaggioInviato}
+        annuncio={prenotazioneAttiva}
+        onBack={() => {
+          setMessaggioInviato(null);
+          setPrenotazioneAttiva(null);
+        }}
+      />
+    );
+  }
+
+  if (prenotazioneAttiva) {
+    return (
+      <Prenotazione
+        annuncio={prenotazioneAttiva}
+        onBack={() => setPrenotazioneAttiva(null)}
+        onConferma={(msg) => setMessaggioInviato(msg)}
+      />
+    );
+  }
+
   if (annuncioSelezionato) {
     return (
       <DettaglioAnnuncio
         annuncio={annuncioSelezionato}
         onBack={() => setAnnuncioSelezionato(null)}
+        onRichiedi={() => {
+          setPrenotazioneAttiva(annuncioSelezionato);
+          setAnnuncioSelezionato(null);
+        }}
       />
     );
   }
 
   return (
     <View style={styles.wrapper}>
-      {/* Header fisso con titolo e barra ricerca */}
+      {/* Header fisso */}
       <View style={styles.headerFixed}>
         <View style={styles.titoloWrapper}>
           <CameraDoodle width={40} height={40} />
@@ -100,20 +131,15 @@ const Offerte: React.FC = () => {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.cardList}
-                style={{ height: 180 }}  // Altezza fissa per contenitore ScrollView orizzontale
+                style={{ height: 180 }}
               >
                 {filtered.map((a, i) => {
                   const isDefaultImage = a.immagine === immagineDefault;
-                  // Passa rating come dato interno, anche se non mostrato
-                  const rating = typeof a.rating === 'number' ? a.rating : 4;
-
                   return (
                     <TouchableOpacity
                       key={i}
                       style={styles.card}
                       onPress={() => setAnnuncioSelezionato(a)}
-                      // rating è disponibile qui se serve per qualche logica futura
-                      // ad esempio: data-rating={rating}
                     >
                       <Image
                         source={a.immagine ?? immagineDefault}
@@ -121,7 +147,6 @@ const Offerte: React.FC = () => {
                         resizeMode={isDefaultImage ? 'contain' : 'cover'}
                       />
                       <Text style={styles.cardTitle}>{a.titolo}</Text>
-                      {/* rating non mostrato */}
                     </TouchableOpacity>
                   );
                 })}
@@ -131,6 +156,7 @@ const Offerte: React.FC = () => {
         })}
       </ScrollView>
 
+      {/* Filtro Modale */}
       <Filtri
         visible={showFiltri}
         initialCategories={filtroCategorie}

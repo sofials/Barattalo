@@ -11,11 +11,14 @@ import Prenotazione from './Prenotazione';
 import { AnnuncioProvider } from './AnnunciContext'; 
 import { EventoProvider } from './EventiContext';
 import { PuntiProvider } from './PuntiContext';
+import { Provider as PaperProvider } from 'react-native-paper';
+
 
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
   return (
+     <PaperProvider>
   <AnnuncioProvider>
     <EventoProvider>
     <PuntiProvider>
@@ -26,13 +29,12 @@ const App: React.FC = () => {
         <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="Rating" component={Rating} />
         <Stack.Screen name="Portici" component={Portici}/>
-        <Stack.Screen name="Richiesta" component={Richiesta} />
-        <Stack.Screen name="Prenotazione" component={Prenotazione} />
       </Stack.Navigator>
     </NavigationContainer>
     </PuntiProvider>
     </EventoProvider>
     </AnnuncioProvider>
+    </PaperProvider>
   );
 };
 

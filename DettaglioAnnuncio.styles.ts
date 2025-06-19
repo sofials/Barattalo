@@ -1,4 +1,3 @@
-// DettaglioAnnuncio.styles.ts
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -72,6 +71,30 @@ const styles = StyleSheet.create({
     color: '#2B31BA',
     fontSize: 14,
     marginTop: 4,
+  },
+
+  // Nuovi stili per punti in alto a destra
+  puntiBox: {
+    position: 'absolute',
+    top: 32,
+    right: 24,
+    zIndex: 20,
+  },
+
+  puntiRiquadro: {
+    backgroundColor: '#EBDBCD',
+    borderRadius: 11,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  puntiText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#6B53FF',
   },
 });
 

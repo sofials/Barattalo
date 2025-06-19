@@ -1,18 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import ArrowRight from './icons/arrowRight.svg';
 import CameraDoodle from './icons/books.svg';
 import { usePunti } from './PuntiContext';
+import { Annuncio} from './DettaglioAnnuncio';
 
-const Richiesta: React.FC = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
+type RichiestaProps = {
+  messaggio: string;
+  onBack: () => void;
+  annuncio: Annuncio;  // aggiungi questa riga
+};
+
+const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) => {
   const { togliPunti } = usePunti();
-  const messaggioUtente = route.params && (route.params as any).messaggio ? (route.params as any).messaggio : '';
-  const [messages, setMessages] = useState([
-    { id: 1, text: messaggioUtente, from: 'me' }
-  ]);
+  const [messages, setMessages] = useState([{ id: 1, text: messaggio, from: 'me' }]);
   const [input, setInput] = useState('');
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -22,7 +33,7 @@ const Richiesta: React.FC = () => {
 
   const sendMessage = () => {
     if (input.trim() === '') return;
-    setMessages([...messages, { id: Date.now(), text: input, from: 'me' }]);
+    setMessages(prev => [...prev, { id: Date.now(), text: input, from: 'me' }]);
     setInput('');
     setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -34,7 +45,7 @@ const Richiesta: React.FC = () => {
       {/* Barra superiore */}
       <View style={styles.topBar}>
         <View style={styles.left}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={onBack}>
             <ArrowRight width={32} height={32} />
           </TouchableOpacity>
           <Text style={styles.title}>Richiesta</Text>
@@ -44,15 +55,13 @@ const Richiesta: React.FC = () => {
 
       {/* Info destinatario */}
       <View style={styles.infoRow}>
-        <Image
-          source={require('./assets/anna.jpg')}
-          style={styles.avatar}
-        />
+        <Image source={require('./assets/anna.jpg')} style={styles.avatar} />
         <View style={{ marginLeft: 16 }}>
-          <Text style={styles.h1}>Gianni</Text>
-          <Text style={styles.sottotitolo}>
-            richiesta inviata per: <Text style={{ color: '#6B53FF', fontWeight: 'bold' }}>Ripetizioni di Italiano</Text>
-          </Text>
+          <Text style={styles.h1}>Laura</Text>
+         <Text style={styles.sottotitolo}>
+              richiesta inviata per:{' '}
+             <Text style={{ color: '#6B53FF', fontWeight: 'bold' }}>{annuncio.titolo}</Text>
+         </Text>
         </View>
       </View>
 
@@ -64,7 +73,10 @@ const Richiesta: React.FC = () => {
       />
 
       {/* Chat */}
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ScrollView
           style={{ flex: 1, paddingHorizontal: 16 }}
           contentContainerStyle={{ paddingVertical: 16 }}
@@ -94,6 +106,7 @@ const Richiesta: React.FC = () => {
     </View>
   );
 };
+
 export default Richiesta;
 
 const styles = StyleSheet.create({
