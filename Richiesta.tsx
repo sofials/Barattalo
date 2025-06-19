@@ -1,83 +1,180 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect, useRef, useState, useContext } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import ArrowRight from './icons/arrowRight.svg';
-import CameraDoodle from './icons/books.svg';
 import { usePunti } from './PuntiContext';
+import { Annuncio } from './DettaglioAnnuncio';
+import { MessagesContext, Message } from './MessagesContext';
 
-const Richiesta: React.FC = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { togliPunti } = usePunti();
-  const messaggioUtente = route.params && (route.params as any).messaggio ? (route.params as any).messaggio : '';
-  const [messages, setMessages] = useState([
-    { id: 1, text: messaggioUtente, from: 'me' }
-  ]);
+// Importa NotificationsContext per aggiungere notifica
+import { NotificationsContext } from './NotificationsContext';
+
+type RichiestaProps = {
+  messaggio: string;
+  onBack: () => void;
+  annuncio: Annuncio;
+};
+
+let uniqueCounter = 0;
+
+const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) => {
+  const { punti, togliPunti } = usePunti();
+  const { messages, setMessages } = useContext(MessagesContext);
+
+  // Usa NotificationsContext
+  const { addNotification } = useContext(NotificationsContext);
+
   const [input, setInput] = useState('');
   const scrollViewRef = useRef<ScrollView>(null);
+  const [mainMessageId, setMainMessageId] = useState<number | null>(null);
 
   useEffect(() => {
     togliPunti(30);
   }, []);
 
+  useEffect(() => {
+    setMessages(prev => {
+      const existing = prev.find(
+        m =>
+          m.isnew &&
+          m.preview === messaggio &&
+          m.receiver === 'Laura' &&
+          m.sender === 'Io' &&
+          m.mainMessageId === m.id
+      );
+
+      if (existing) {
+        setMainMessageId(existing.id);
+        return prev;
+      }
+
+      uniqueCounter++;
+      const newMainId = Date.now() + uniqueCounter;
+      setMainMessageId(newMainId);
+
+      const newMessage: Message = {
+        id: newMainId,
+        mainMessageId: newMainId,
+        sender: 'Io',
+        preview: messaggio,
+        unread: false,  // <-- QUI unread false per i nuovi messaggi
+        image: require('./assets/anna.jpg'),
+        receiver: 'Laura',
+        isnew: true,
+        offertaTitolo: annuncio.titolo,
+        offertaCategoria: annuncio.categoria,
+        type: 'message' as const,
+      };
+
+      // Aggiungi notifica al contesto
+      addNotification({
+        title: 'Laura ha accettato la tua richiesta',
+        preview: 'Vedi cosa ti ha scritto Laura',
+        image: require('./assets/anna.jpg'),
+        unread: true,
+      });
+
+      return [newMessage, ...prev];
+    });
+  }, [messaggio, annuncio.titolo, setMessages]);
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
+
   const sendMessage = () => {
-    if (input.trim() === '') return;
-    setMessages([...messages, { id: Date.now(), text: input, from: 'me' }]);
+    if (input.trim() === '' || mainMessageId === null) return;
+
+    uniqueCounter++;
+    const newId = Date.now() + uniqueCounter;
+
+    const newMessage: Message = {
+      id: newId,
+      mainMessageId,
+      sender: 'Io',
+      preview: input.trim(),
+      unread: false,  // <-- QUI unread false per i nuovi messaggi
+      image: require('./assets/anna.jpg'),
+      receiver: 'Laura',
+      isnew: true,
+      type: 'message' as const,
+    };
+
+    setMessages(prev => [...prev, newMessage]);
     setInput('');
-    setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
   };
 
+  const filteredMessages = messages.filter(
+    m => m.isnew && m.mainMessageId === mainMessageId
+  );
+
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      {/* Barra superiore */}
+    <View style={{ flex: 1, backgroundColor: '#fff', position: 'relative' }}>
+      <View style={puntiStyles.puntiBox}>
+        <View style={puntiStyles.puntiRiquadro}>
+          <Text style={puntiStyles.puntiText}>{punti} punti</Text>
+        </View>
+      </View>
+
       <View style={styles.topBar}>
         <View style={styles.left}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={onBack}>
             <ArrowRight width={32} height={32} />
           </TouchableOpacity>
           <Text style={styles.title}>Richiesta</Text>
         </View>
-        <CameraDoodle width={40} height={40} />
       </View>
 
-      {/* Info destinatario */}
       <View style={styles.infoRow}>
-        <Image
-          source={require('./assets/anna.jpg')}
-          style={styles.avatar}
-        />
+        <Image source={require('./assets/anna.jpg')} style={styles.avatar} />
         <View style={{ marginLeft: 16 }}>
-          <Text style={styles.h1}>Gianni</Text>
+          <Text style={styles.h1}>Laura</Text>
           <Text style={styles.sottotitolo}>
-            richiesta inviata per: <Text style={{ color: '#6B53FF', fontWeight: 'bold' }}>Ripetizioni di Italiano</Text>
+            richiesta inviata per:{' '}
+            <Text style={{ color: '#6B53FF', fontWeight: 'bold' }}>
+              {annuncio.titolo}
+            </Text>
           </Text>
         </View>
       </View>
 
-      {/* Divider */}
       <Image
         source={require('./icons/divider.png')}
         style={{ width: '100%', height: 16, marginBottom: 8 }}
         resizeMode="contain"
       />
 
-      {/* Chat */}
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ScrollView
           style={{ flex: 1, paddingHorizontal: 16 }}
           contentContainerStyle={{ paddingVertical: 16 }}
           ref={scrollViewRef}
+          keyboardShouldPersistTaps="handled"
         >
-          {messages.map((msg) => (
-            <View key={msg.id} style={styles.baloonMe}>
-              <Text style={styles.textMe}>{msg.text}</Text>
+          {filteredMessages.map(msg => (
+            <View
+              key={msg.id}
+              style={msg.sender === 'Io' ? styles.baloonMe : styles.baloonOther}
+            >
+              <Text style={msg.sender === 'Io' ? styles.textMe : styles.textOther}>
+                {msg.preview}
+              </Text>
             </View>
           ))}
         </ScrollView>
 
-        {/* Input per inviare messaggi */}
         <View style={styles.inputRow}>
           <TextInput
             style={styles.input}
@@ -85,6 +182,7 @@ const Richiesta: React.FC = () => {
             value={input}
             onChangeText={setInput}
             placeholderTextColor="#aaa"
+            multiline
           />
           <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
             <Text style={{ color: '#fff', fontWeight: 'bold' }}>Invia</Text>
@@ -94,6 +192,7 @@ const Richiesta: React.FC = () => {
     </View>
   );
 };
+
 export default Richiesta;
 
 const styles = StyleSheet.create({
@@ -147,8 +246,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     maxWidth: '80%',
   },
+  baloonOther: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#ddd',
+    borderRadius: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    marginBottom: 10,
+    maxWidth: '80%',
+  },
   textMe: {
     color: '#fff',
+    fontSize: 16,
+  },
+  textOther: {
+    color: '#222',
     fontSize: 16,
   },
   inputRow: {
@@ -169,11 +281,35 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 8,
     color: '#222',
+    maxHeight: 100,
   },
   sendButton: {
     backgroundColor: '#6B53FF',
     borderRadius: 22,
     paddingVertical: 10,
     paddingHorizontal: 18,
+  },
+});
+
+const puntiStyles = StyleSheet.create({
+  puntiBox: {
+    position: 'absolute',
+    top: 32,
+    right: 24,
+    zIndex: 20,
+  },
+  puntiRiquadro: {
+    backgroundColor: '#EBDBCD',
+    borderRadius: 11,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  puntiText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#6B53FF',
   },
 });

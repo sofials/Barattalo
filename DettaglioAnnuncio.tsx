@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, ImageSourcePropType } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import styles from './DettaglioAnnuncio.styles';
+import { usePunti } from './PuntiContext';  // Importa il context punti
 
 export type Annuncio = {
   titolo: string;
   descrizione: string;
   categoria: string;
-  immagine?: ImageSourcePropType;
+  immagine?: any;
   km?: number;
   puntiAnnuncio: number;
   rating?: number;
@@ -15,31 +16,21 @@ export type Annuncio = {
 type DettaglioAnnuncioProps = {
   annuncio: Annuncio;
   onBack: () => void;
+  onRichiedi: () => void;
 };
 
-const DettaglioAnnuncio: React.FC<DettaglioAnnuncioProps> = ({ annuncio, onBack }) => {
-  const handleRichiediPress = () => {
-    console.log("Richiesta inviata al proprietario");
-  };
+const DettaglioAnnuncio: React.FC<DettaglioAnnuncioProps> = ({ annuncio, onBack, onRichiedi }) => {
+  const { punti } = usePunti();  // Leggi i punti
 
-  // Variabile booleana che indica se il rating è valido
   const hasRating = typeof annuncio.rating === 'number' && annuncio.rating >= 0;
 
-  // Funzione per mostrare le stelle piene o vuote con colore dello sfondo del bottone
   const renderStars = (rating?: number) => {
-    if (typeof rating !== "number" || rating < 0) {
-      return null;
-    }
-
-    const starColor = styles.richiediButton.backgroundColor; // '#d8d1ff'
-
+    if (typeof rating !== "number" || rating < 0) return null;
+    const starColor = styles.richiediButton.backgroundColor;
     return (
       <View style={{ flexDirection: 'row', marginVertical: 5 }}>
         {[...Array(5)].map((_, i) => (
-          <Text
-            key={i}
-            style={{ color: i < rating ? starColor : 'lightgray', fontSize: 20, marginRight: 2 }}
-          >
+          <Text key={i} style={{ color: i < rating ? starColor : 'lightgray', fontSize: 20, marginRight: 2 }}>
             ★
           </Text>
         ))}
@@ -49,6 +40,13 @@ const DettaglioAnnuncio: React.FC<DettaglioAnnuncioProps> = ({ annuncio, onBack 
 
   return (
     <View style={{ flex: 1 }}>
+      {/* Box punti in alto a destra */}
+      <View style={styles.puntiBox}>
+        <View style={styles.puntiRiquadro}>
+          <Text style={styles.puntiText}>{punti} punti</Text>
+        </View>
+      </View>
+
       <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 140 }}>
         <TouchableOpacity onPress={onBack} style={styles.backButton}>
           <Text style={styles.backButtonText}>← Annunci</Text>
@@ -74,11 +72,7 @@ const DettaglioAnnuncio: React.FC<DettaglioAnnuncioProps> = ({ annuncio, onBack 
         )}
       </ScrollView>
 
-      <TouchableOpacity
-        onPress={handleRichiediPress}
-        style={styles.richiediButton}
-        activeOpacity={0.8}
-      >
+      <TouchableOpacity onPress={onRichiedi} style={styles.richiediButton} activeOpacity={0.8}>
         <View style={{ alignItems: 'center' }}>
           <Text style={styles.richiediButtonText}>Richiedi</Text>
           <Text style={styles.richiediButtonPoints}>{annuncio.puntiAnnuncio} punti</Text>

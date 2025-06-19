@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
@@ -34,18 +36,56 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: -40,
   },
+
+  // --- BARRA RICERCA DA OFFERTA ---
+
+  searchWrapper: {
+    alignItems: 'center',
+    width: '100%',
+  },
+
+  searchBox: {
+    width: '100%',
+    maxWidth: 340,
+    backgroundColor: '#d8d1ff',
+    borderRadius: 12,
+    padding: 10,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
   searchInput: {
-  width: '90%',
-  height: 44,
-  borderRadius: 12,
-  borderWidth: 1,
-  borderColor: '#ccc',
-  paddingHorizontal: 16,
-  fontSize: 16,
-  marginBottom: 24,
-  backgroundColor: '#fff',
-  marginTop: 40,
-},
+    flex: 1,
+    height: 42,
+    borderWidth: 1,
+    borderColor: '#a99be6',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginRight: 8,
+    color: '#000',
+    backgroundColor: '#fff',
+    fontWeight: 'normal',
+  },
+
+  filterButton: {
+    backgroundColor: '#d8d1ff',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+
+  filterButtonText: {
+    color: '#2B31BA',
+    fontWeight: 'bold',
+  },
 });
 
 export default styles;
