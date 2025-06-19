@@ -7,6 +7,7 @@ import HomeDoodles from './icons/homeDoodles.svg';
 import New from './icons/new.svg';
 import styles from './Home.styles';
 
+
 const { width } = Dimensions.get('window');
 
 export default function Home() {

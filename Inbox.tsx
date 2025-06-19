@@ -1,67 +1,44 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ArrowRight from './icons/arrowRight.svg';
 import CameraDoodle from './icons/books.svg';
 import styles from './Inbox.styles';
 
-// Messaggi di prova
-const messages = [
-  {
-    id: 1,
-    sender: 'Gianni - Ripetizioni di Italiano',
-    preview: 'Ciao, saresti disponibile per dare delle ripetizioni di italiano a mio figlio? Fr...',
-    image: require('./assets/gianni.png'),
-    unread: true,
-  },
-  {
-    id: 2,
-    sender: 'Portici di Carta',
-    preview: 'Paolo: Ciao, prendiamo un caffè prima dell’evento?',
-    image: require('./assets/portici.jpg'),
-    unread: false,
-  },
-  {
-    id: 3,
-    sender: 'Marianna',
-    preview: 'Grazie per il tuo aiuto, mio figlio ha preso 8 nella verifica di ieri. Sei stato molto prezioso.',
-    image: require('./assets/marianna.jpg'),
-    unread: false,
-  },
-];
-
-const notifications = [
-  {
-    id: 1,
-    title: 'Com’è andata con Giulia?',
-    preview: 'Lascia una recensione per l’Aiuto che hai chiesto.',
-    image: require('./assets/giulia.jpg'),
-    unread: true,
-  },
-  {
-    id: 2,
-    title: 'Evento in arrivo',
-    preview: 'Non dimenticare: domani c’è Portici di Carta!',
-    image: require('./assets/portici.jpg'),
-    unread: false,
-  },
-  {
-    id: 3,
-    title: 'Grazia ha votato il tuo Aiuto',
-    preview: 'Grazia ti ha lasciato una recensione.',
-    image: require('./assets/grazia.jpg'),
-    unread: false,
-  },
-];
+import { MessagesContext, Message } from './MessagesContext'; // importa anche il tipo Message
+import { NotificationsContext } from './NotificationsContext';
 
 const Inbox: React.FC = () => {
   const navigation = useNavigation<any>();
   const [selected, setSelected] = useState<'messaggi' | 'notifiche'>('messaggi');
-  const [gianniRead, setGianniRead] = useState(false);
-  const [firstNotifRead, setFirstNotifRead] = useState(false);
+
+  const { messages, gianniRead, setGianniRead, setMessages } = useContext(MessagesContext);
+  const { notifications, firstNotifRead, setFirstNotifRead } = useContext(NotificationsContext);
+
+  const handleGianniPress = () => {
+    setGianniRead(true);
+    setMessages(prev =>
+      prev.map(msg =>
+        msg.id === 1 ? { ...msg, unread: false, isnew: false } : msg
+      )
+    );
+    navigation.navigate('ChatGianni');
+  };
+
+  const handleFirstNotifPress = () => {
+    setFirstNotifRead(true);
+    navigation.navigate('Rating');
+  };
+
+  // Funzione generica per aprire chat, passa sender e preview
+  const handleGenericChatPress = (senderName: string, preview: string, requestId?: number) => {
+    // Puoi anche passare requestId se serve per filtrare la chat nel dettaglio
+    navigation.navigate('DettaglioChat', { senderName, initialPreview: preview, requestId });
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      {/* Top Bar */}
       <View style={styles.topBar}>
         <View style={styles.left}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -72,79 +49,57 @@ const Inbox: React.FC = () => {
         <CameraDoodle width={40} height={40} />
       </View>
 
+      {/* Tabs */}
       <View style={styles.sectionTabs}>
         <TouchableOpacity
-          style={[
-            styles.tabButton,
-            selected === 'messaggi' && styles.tabButtonActive,
-          ]}
+          style={[styles.tabButton, selected === 'messaggi' && styles.tabButtonActive]}
           onPress={() => setSelected('messaggi')}
         >
-          <Text style={[
-            styles.tabText,
-            selected === 'messaggi' && styles.tabTextActive,
-          ]}>
+          <Text style={[styles.tabText, selected === 'messaggi' && styles.tabTextActive]}>
             Messaggi
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[
-            styles.tabButton,
-            selected === 'notifiche' && styles.tabButtonActive,
-          ]}
+          style={[styles.tabButton, selected === 'notifiche' && styles.tabButtonActive]}
           onPress={() => setSelected('notifiche')}
         >
-          <Text style={[
-            styles.tabText,
-            selected === 'notifiche' && styles.tabTextActive,
-          ]}>
+          <Text style={[styles.tabText, selected === 'notifiche' && styles.tabTextActive]}>
             Notifiche
           </Text>
         </TouchableOpacity>
       </View>
 
+      {/* Content */}
       <View style={styles.sectionContent}>
         {selected === 'messaggi' ? (
           <View style={{ width: '100%' }}>
-            {messages.map((msg, idx) => {
-              const isFirst = idx === 0;
+            {messages.map(msg => {
+              const isGianni = msg.sender === 'Gianni';
               const isPortici = msg.sender === 'Portici di Carta';
-              const MessageWrapper = (isFirst || isPortici) ? TouchableOpacity : View;
-              const wrapperProps =
-                isFirst
-                  ? {
-                      onPress: () => {
-                        setGianniRead(true);
-                        navigation.navigate('Chat');
-                      },
-                      activeOpacity: 0.7,
-                    }
-                  : isPortici
-                  ? {
-                      onPress: () => navigation.navigate('Portici'),
-                      activeOpacity: 0.7,
-                    }
-                  : {};
+
+              const onPressHandler = isGianni
+                ? handleGianniPress
+                : isPortici
+                ? () => navigation.navigate('Portici')
+                : () => handleGenericChatPress(msg.sender, msg.preview, msg.id);
 
               return (
-                <MessageWrapper
+                <TouchableOpacity
                   key={msg.id}
-                  style={[
-                    styles.messageCard,
-                    msg.unread && !gianniRead && styles.messageCardUnread,
-                  ]}
-                  {...wrapperProps}
+                  style={[styles.messageCard, msg.unread && styles.messageCardUnread]}
+                  onPress={onPressHandler}
+                  activeOpacity={0.7}
                 >
-                  <Image
-                    source={msg.image}
-                    style={styles.proPic}
-                    resizeMode="cover"
-                  />
+                  <Image source={msg.image} style={styles.proPic} resizeMode="cover" />
                   <View style={{ flex: 1, marginLeft: 12 }}>
-                    <Text style={styles.sender}>{msg.sender}</Text>
+                    <Text style={styles.sender}>
+                      {msg.sender === 'Io' && msg.receiver === 'Laura'
+                        ? `Laura - ${msg.offertaTitolo ?? 'Offerta'}`
+                        : msg.sender}
+                    </Text>
                     <Text style={styles.preview}>{msg.preview}</Text>
                   </View>
-                </MessageWrapper>
+                </TouchableOpacity>
               );
             })}
           </View>
@@ -152,15 +107,13 @@ const Inbox: React.FC = () => {
           <View style={{ width: '100%' }}>
             {notifications.map((notif, idx) => {
               const NotifWrapper = idx === 0 ? TouchableOpacity : View;
-              const wrapperProps = idx === 0
-                ? {
-                    onPress: () => {
-                      setFirstNotifRead(true);
-                      navigation.navigate('Rating');
-                    },
-                    activeOpacity: 0.7,
-                  }
-                : {};
+              const wrapperProps =
+                idx === 0
+                  ? {
+                      onPress: handleFirstNotifPress,
+                      activeOpacity: 0.7,
+                    }
+                  : {};
 
               return (
                 <NotifWrapper
@@ -171,11 +124,7 @@ const Inbox: React.FC = () => {
                   ]}
                   {...wrapperProps}
                 >
-                  <Image
-                    source={notif.image}
-                    style={styles.proPic}
-                    resizeMode="cover"
-                  />
+                  <Image source={notif.image} style={styles.proPic} resizeMode="cover" />
                   <View style={{ flex: 1, marginLeft: 12 }}>
                     <Text style={styles.sender}>{notif.title}</Text>
                     <Text style={styles.preview}>{notif.preview}</Text>

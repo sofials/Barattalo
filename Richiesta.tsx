@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -13,31 +13,80 @@ import {
 import ArrowRight from './icons/arrowRight.svg';
 import CameraDoodle from './icons/books.svg';
 import { usePunti } from './PuntiContext';
-import { Annuncio} from './DettaglioAnnuncio';
+import { Annuncio } from './DettaglioAnnuncio';
+import { MessagesContext } from './MessagesContext';
 
 type RichiestaProps = {
   messaggio: string;
   onBack: () => void;
-  annuncio: Annuncio;  // aggiungi questa riga
+  annuncio: Annuncio;
 };
 
 const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) => {
   const { togliPunti } = usePunti();
-  const [messages, setMessages] = useState([{ id: 1, text: messaggio, from: 'me' }]);
+  const { messages, setMessages } = useContext(MessagesContext);
+
   const [input, setInput] = useState('');
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     togliPunti(30);
-  }, []);
+
+    setMessages(prev => {
+      const exists = prev.some(
+        m => m.preview === messaggio && m.receiver === 'Laura' && m.sender === 'Io'
+      );
+      if (!exists) {
+        // Calcola il massimo requestId esistente
+        const maxRequestId = prev.reduce((maxId, msg) => {
+          return msg.id && msg.id > maxId ? msg.id : maxId;
+        }, 0);
+
+        const initialMessage = {
+          id: Date.now(),
+          sender: 'Io',
+          preview: messaggio,
+          unread: true,
+          source: 'user',
+          image: require('./assets/anna.jpg'),
+          receiver: 'Laura',
+          isnew: true,
+          offertaTitolo: annuncio.titolo,
+          requestId: maxRequestId + 1,  // assegna nuovo requestId incrementale
+        };
+        return [initialMessage, ...prev];
+      }
+      return prev;
+    });
+  }, [messaggio, setMessages, togliPunti, annuncio.titolo]);
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
 
   const sendMessage = () => {
     if (input.trim() === '') return;
-    setMessages(prev => [...prev, { id: Date.now(), text: input, from: 'me' }]);
+
+    // Trova il requestId della richiesta principale (per associare messaggi collegati)
+    const mainRequest = messages.find(
+      m => m.preview === messaggio && m.sender === 'Io' && m.receiver === 'Laura'
+    );
+
+    const newMessage = {
+      id: Date.now(),
+      sender: 'Io',
+      preview: input.trim(),
+      unread: true,
+      source: 'user',
+      image: require('./assets/anna.jpg'),
+      receiver: 'Laura',
+      isnew: true,
+      requestId: mainRequest ? mainRequest.id : undefined, // mantiene lo stesso requestId
+    };
+
+    console.log('[📨 INVIO] Aggiunto al contesto:', newMessage);
+    setMessages(prev => [newMessage, ...prev]);
     setInput('');
-    setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
   };
 
   return (
@@ -58,10 +107,12 @@ const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) =>
         <Image source={require('./assets/anna.jpg')} style={styles.avatar} />
         <View style={{ marginLeft: 16 }}>
           <Text style={styles.h1}>Laura</Text>
-         <Text style={styles.sottotitolo}>
-              richiesta inviata per:{' '}
-             <Text style={{ color: '#6B53FF', fontWeight: 'bold' }}>{annuncio.titolo}</Text>
-         </Text>
+          <Text style={styles.sottotitolo}>
+            richiesta inviata per:{' '}
+            <Text style={{ color: '#6B53FF', fontWeight: 'bold' }}>
+              {annuncio.titolo}
+            </Text>
+          </Text>
         </View>
       </View>
 
@@ -81,12 +132,20 @@ const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) =>
           style={{ flex: 1, paddingHorizontal: 16 }}
           contentContainerStyle={{ paddingVertical: 16 }}
           ref={scrollViewRef}
+          keyboardShouldPersistTaps="handled"
         >
-          {messages.map((msg) => (
-            <View key={msg.id} style={styles.baloonMe}>
-              <Text style={styles.textMe}>{msg.text}</Text>
-            </View>
-          ))}
+          {messages
+            .filter(m => m.receiver === 'Laura')
+            .map(msg => (
+              <View
+                key={msg.id}
+                style={msg.sender === 'Io' ? styles.baloonMe : styles.baloonOther}
+              >
+                <Text style={msg.sender === 'Io' ? styles.textMe : styles.textOther}>
+                  {msg.preview}
+                </Text>
+              </View>
+            ))}
         </ScrollView>
 
         {/* Input per inviare messaggi */}
@@ -97,6 +156,7 @@ const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) =>
             value={input}
             onChangeText={setInput}
             placeholderTextColor="#aaa"
+            multiline
           />
           <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
             <Text style={{ color: '#fff', fontWeight: 'bold' }}>Invia</Text>
@@ -160,8 +220,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     maxWidth: '80%',
   },
+  baloonOther: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#ddd',
+    borderRadius: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    marginBottom: 10,
+    maxWidth: '80%',
+  },
   textMe: {
     color: '#fff',
+    fontSize: 16,
+  },
+  textOther: {
+    color: '#222',
     fontSize: 16,
   },
   inputRow: {
@@ -182,6 +255,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 8,
     color: '#222',
+    maxHeight: 100,
   },
   sendButton: {
     backgroundColor: '#6B53FF',
