@@ -49,7 +49,6 @@ const Offerte: React.FC = () => {
 
   return (
     <View style={styles.wrapper}>
-      {/* Header fisso con titolo e barra ricerca */}
       <View style={styles.headerFixed}>
         <View style={styles.titoloWrapper}>
           <CameraDoodle width={40} height={40} />
@@ -84,7 +83,6 @@ const Offerte: React.FC = () => {
         </View>
       </View>
 
-      {/* Lista annunci */}
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ paddingBottom: 100, paddingTop: 220 }}
@@ -100,11 +98,10 @@ const Offerte: React.FC = () => {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.cardList}
-                style={{ height: 180 }}  // Altezza fissa per contenitore ScrollView orizzontale
+                style={{ height: 180 }} 
               >
                 {filtered.map((a, i) => {
                   const isDefaultImage = a.immagine === immagineDefault;
-                  // Passa rating come dato interno, anche se non mostrato
                   const rating = typeof a.rating === 'number' ? a.rating : 4;
 
                   return (
@@ -112,8 +109,6 @@ const Offerte: React.FC = () => {
                       key={i}
                       style={styles.card}
                       onPress={() => setAnnuncioSelezionato(a)}
-                      // rating è disponibile qui se serve per qualche logica futura
-                      // ad esempio: data-rating={rating}
                     >
                       <Image
                         source={a.immagine ?? immagineDefault}
@@ -121,7 +116,6 @@ const Offerte: React.FC = () => {
                         resizeMode={isDefaultImage ? 'contain' : 'cover'}
                       />
                       <Text style={styles.cardTitle}>{a.titolo}</Text>
-                      {/* rating non mostrato */}
                     </TouchableOpacity>
                   );
                 })}
