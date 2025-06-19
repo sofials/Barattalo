@@ -11,10 +11,12 @@ import {
   Platform,
 } from 'react-native';
 import ArrowRight from './icons/arrowRight.svg';
-import CameraDoodle from './icons/books.svg';
 import { usePunti } from './PuntiContext';
 import { Annuncio } from './DettaglioAnnuncio';
-import { MessagesContext } from './MessagesContext';
+import { MessagesContext, Message } from './MessagesContext';
+
+// Importa NotificationsContext per aggiungere notifica
+import { NotificationsContext } from './NotificationsContext';
 
 type RichiestaProps = {
   messaggio: string;
@@ -22,76 +24,107 @@ type RichiestaProps = {
   annuncio: Annuncio;
 };
 
+let uniqueCounter = 0;
+
 const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) => {
-  const { togliPunti } = usePunti();
+  const { punti, togliPunti } = usePunti();
   const { messages, setMessages } = useContext(MessagesContext);
+
+  // Usa NotificationsContext
+  const { addNotification } = useContext(NotificationsContext);
 
   const [input, setInput] = useState('');
   const scrollViewRef = useRef<ScrollView>(null);
+  const [mainMessageId, setMainMessageId] = useState<number | null>(null);
 
   useEffect(() => {
     togliPunti(30);
+  }, []);
 
+  useEffect(() => {
     setMessages(prev => {
-      const exists = prev.some(
-        m => m.preview === messaggio && m.receiver === 'Laura' && m.sender === 'Io'
+      const existing = prev.find(
+        m =>
+          m.isnew &&
+          m.preview === messaggio &&
+          m.receiver === 'Laura' &&
+          m.sender === 'Io' &&
+          m.mainMessageId === m.id
       );
-      if (!exists) {
-        // Calcola il massimo requestId esistente
-        const maxRequestId = prev.reduce((maxId, msg) => {
-          return msg.id && msg.id > maxId ? msg.id : maxId;
-        }, 0);
 
-        const initialMessage = {
-          id: Date.now(),
-          sender: 'Io',
-          preview: messaggio,
-          unread: true,
-          source: 'user',
-          image: require('./assets/anna.jpg'),
-          receiver: 'Laura',
-          isnew: true,
-          offertaTitolo: annuncio.titolo,
-          requestId: maxRequestId + 1,  // assegna nuovo requestId incrementale
-        };
-        return [initialMessage, ...prev];
+      if (existing) {
+        setMainMessageId(existing.id);
+        return prev;
       }
-      return prev;
+
+      uniqueCounter++;
+      const newMainId = Date.now() + uniqueCounter;
+      setMainMessageId(newMainId);
+
+      const newMessage: Message = {
+        id: newMainId,
+        mainMessageId: newMainId,
+        sender: 'Io',
+        preview: messaggio,
+        unread: false,  // <-- QUI unread false per i nuovi messaggi
+        image: require('./assets/anna.jpg'),
+        receiver: 'Laura',
+        isnew: true,
+        offertaTitolo: annuncio.titolo,
+        offertaCategoria: annuncio.categoria,
+        type: 'message' as const,
+      };
+
+      // Aggiungi notifica al contesto
+      addNotification({
+        title: 'Laura ha accettato la tua richiesta',
+        preview: 'Vedi cosa ti ha scritto Laura',
+        image: require('./assets/anna.jpg'),
+        unread: true,
+      });
+
+      return [newMessage, ...prev];
     });
-  }, [messaggio, setMessages, togliPunti, annuncio.titolo]);
+  }, [messaggio, annuncio.titolo, setMessages]);
 
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
   const sendMessage = () => {
-    if (input.trim() === '') return;
+    if (input.trim() === '' || mainMessageId === null) return;
 
-    // Trova il requestId della richiesta principale (per associare messaggi collegati)
-    const mainRequest = messages.find(
-      m => m.preview === messaggio && m.sender === 'Io' && m.receiver === 'Laura'
-    );
+    uniqueCounter++;
+    const newId = Date.now() + uniqueCounter;
 
-    const newMessage = {
-      id: Date.now(),
+    const newMessage: Message = {
+      id: newId,
+      mainMessageId,
       sender: 'Io',
       preview: input.trim(),
-      unread: true,
-      source: 'user',
+      unread: false,  // <-- QUI unread false per i nuovi messaggi
       image: require('./assets/anna.jpg'),
       receiver: 'Laura',
       isnew: true,
-      requestId: mainRequest ? mainRequest.id : undefined, // mantiene lo stesso requestId
+      type: 'message' as const,
     };
 
-    console.log('[📨 INVIO] Aggiunto al contesto:', newMessage);
-    setMessages(prev => [newMessage, ...prev]);
+    setMessages(prev => [...prev, newMessage]);
     setInput('');
   };
 
+  const filteredMessages = messages.filter(
+    m => m.isnew && m.mainMessageId === mainMessageId
+  );
+
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      {/* Barra superiore */}
+    <View style={{ flex: 1, backgroundColor: '#fff', position: 'relative' }}>
+      <View style={puntiStyles.puntiBox}>
+        <View style={puntiStyles.puntiRiquadro}>
+          <Text style={puntiStyles.puntiText}>{punti} punti</Text>
+        </View>
+      </View>
+
       <View style={styles.topBar}>
         <View style={styles.left}>
           <TouchableOpacity onPress={onBack}>
@@ -99,10 +132,8 @@ const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) =>
           </TouchableOpacity>
           <Text style={styles.title}>Richiesta</Text>
         </View>
-        <CameraDoodle width={40} height={40} />
       </View>
 
-      {/* Info destinatario */}
       <View style={styles.infoRow}>
         <Image source={require('./assets/anna.jpg')} style={styles.avatar} />
         <View style={{ marginLeft: 16 }}>
@@ -116,14 +147,12 @@ const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) =>
         </View>
       </View>
 
-      {/* Divider */}
       <Image
         source={require('./icons/divider.png')}
         style={{ width: '100%', height: 16, marginBottom: 8 }}
         resizeMode="contain"
       />
 
-      {/* Chat */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -134,21 +163,18 @@ const Richiesta: React.FC<RichiestaProps> = ({ messaggio, annuncio, onBack }) =>
           ref={scrollViewRef}
           keyboardShouldPersistTaps="handled"
         >
-          {messages
-            .filter(m => m.receiver === 'Laura')
-            .map(msg => (
-              <View
-                key={msg.id}
-                style={msg.sender === 'Io' ? styles.baloonMe : styles.baloonOther}
-              >
-                <Text style={msg.sender === 'Io' ? styles.textMe : styles.textOther}>
-                  {msg.preview}
-                </Text>
-              </View>
-            ))}
+          {filteredMessages.map(msg => (
+            <View
+              key={msg.id}
+              style={msg.sender === 'Io' ? styles.baloonMe : styles.baloonOther}
+            >
+              <Text style={msg.sender === 'Io' ? styles.textMe : styles.textOther}>
+                {msg.preview}
+              </Text>
+            </View>
+          ))}
         </ScrollView>
 
-        {/* Input per inviare messaggi */}
         <View style={styles.inputRow}>
           <TextInput
             style={styles.input}
@@ -262,5 +288,28 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     paddingVertical: 10,
     paddingHorizontal: 18,
+  },
+});
+
+const puntiStyles = StyleSheet.create({
+  puntiBox: {
+    position: 'absolute',
+    top: 32,
+    right: 24,
+    zIndex: 20,
+  },
+  puntiRiquadro: {
+    backgroundColor: '#EBDBCD',
+    borderRadius: 11,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  puntiText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#6B53FF',
   },
 });

@@ -5,12 +5,13 @@ import ArrowRight from './icons/arrowRight.svg';
 import CameraDoodle from './icons/books.svg';
 import styles from './Inbox.styles';
 
-import { MessagesContext, Message } from './MessagesContext'; // importa anche il tipo Message
+import { MessagesContext, Message } from './MessagesContext';
 import { NotificationsContext } from './NotificationsContext';
 
-const Inbox: React.FC = () => {
+const InboxMain: React.FC = () => {
   const navigation = useNavigation<any>();
   const [selected, setSelected] = useState<'messaggi' | 'notifiche'>('messaggi');
+  const [messageFilter, setMessageFilter] = useState<'all' | 'message' | 'event'>('all');
 
   const { messages, gianniRead, setGianniRead, setMessages } = useContext(MessagesContext);
   const { notifications, firstNotifRead, setFirstNotifRead } = useContext(NotificationsContext);
@@ -18,23 +19,30 @@ const Inbox: React.FC = () => {
   const handleGianniPress = () => {
     setGianniRead(true);
     setMessages(prev =>
-      prev.map(msg =>
-        msg.id === 1 ? { ...msg, unread: false, isnew: false } : msg
-      )
+      prev.map(msg => (msg.id === 1 ? { ...msg, unread: false, isnew: false } : msg))
     );
-    navigation.navigate('ChatGianni');
+    navigation.navigate('Chat');
   };
 
-  const handleFirstNotifPress = () => {
+  const handleGiuliaNotificationPress = () => {
     setFirstNotifRead(true);
     navigation.navigate('Rating');
   };
 
-  // Funzione generica per aprire chat, passa sender e preview
-  const handleGenericChatPress = (senderName: string, preview: string, requestId?: number) => {
-    // Puoi anche passare requestId se serve per filtrare la chat nel dettaglio
-    navigation.navigate('DettaglioChat', { senderName, initialPreview: preview, requestId });
+  const handleGenericChatPress = (interlocutore: string, preview: string, id: number) => {
+    navigation.navigate('DettaglioChat', { senderName: interlocutore, initialPreview: preview, id });
   };
+
+  const filteredMessages = messages.filter(msg => {
+    if (messageFilter === 'all') return true;
+    return msg.type === messageFilter;
+  });
+
+  const groupedMessagesMap = new Map<number, Message>();
+  for (const msg of filteredMessages) {
+    groupedMessagesMap.set(msg.id, msg);
+  }
+  const groupedMessages = Array.from(groupedMessagesMap.values());
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -73,15 +81,56 @@ const Inbox: React.FC = () => {
       <View style={styles.sectionContent}>
         {selected === 'messaggi' ? (
           <View style={{ width: '100%' }}>
-            {messages.map(msg => {
+            {/* Filtro messaggi */}
+            <View style={styles.filterButtonsContainer}>
+              <TouchableOpacity
+  style={[styles.filterButton, messageFilter === 'all' && styles.filterButtonActive]}
+  onPress={() => setMessageFilter('all')}
+>
+  <Text style={[styles.filterText, messageFilter === 'all' && styles.filterButtonActiveText]}>
+    Tutti
+  </Text>
+</TouchableOpacity>
+
+              <TouchableOpacity
+  style={[styles.filterButton, messageFilter === 'message' && styles.filterButtonActive]}
+  onPress={() => setMessageFilter('message')}
+>
+  <Text style={[styles.filterText, messageFilter === 'message' && styles.filterButtonActiveText]}>
+    Messaggi
+  </Text>
+</TouchableOpacity>
+
+<TouchableOpacity
+  style={[styles.filterButton, messageFilter === 'event' && styles.filterButtonActive]}
+  onPress={() => setMessageFilter('event')}
+>
+  <Text style={[styles.filterText, messageFilter === 'event' && styles.filterButtonActiveText]}>
+    Eventi
+  </Text>
+</TouchableOpacity>
+
+            </View>
+
+            {groupedMessages.map(msg => {
               const isGianni = msg.sender === 'Gianni';
               const isPortici = msg.sender === 'Portici di Carta';
+
+              const interlocutore = msg.isnew ? msg.receiver ?? 'Sconosciuto' : msg.sender ?? 'Sconosciuto';
 
               const onPressHandler = isGianni
                 ? handleGianniPress
                 : isPortici
                 ? () => navigation.navigate('Portici')
-                : () => handleGenericChatPress(msg.sender, msg.preview, msg.id);
+                : () => handleGenericChatPress(interlocutore, msg.preview, msg.id);
+
+              const displayName = msg.isnew
+                ? `${msg.receiver ?? 'Sconosciuto'} - ${msg.offertaTitolo ?? 'Offerta'}`
+                : msg.sender === 'Io' && msg.receiver === 'Laura'
+                ? `Laura - ${msg.offertaTitolo ?? 'Offerta'}`
+                : msg.sender === 'Gianni' && msg.offertaTitolo
+                ? `Gianni - ${msg.offertaTitolo}`
+                : msg.sender ?? 'Sconosciuto';
 
               return (
                 <TouchableOpacity
@@ -92,11 +141,7 @@ const Inbox: React.FC = () => {
                 >
                   <Image source={msg.image} style={styles.proPic} resizeMode="cover" />
                   <View style={{ flex: 1, marginLeft: 12 }}>
-                    <Text style={styles.sender}>
-                      {msg.sender === 'Io' && msg.receiver === 'Laura'
-                        ? `Laura - ${msg.offertaTitolo ?? 'Offerta'}`
-                        : msg.sender}
-                    </Text>
+                    <Text style={styles.sender}>{displayName}</Text>
                     <Text style={styles.preview}>{msg.preview}</Text>
                   </View>
                 </TouchableOpacity>
@@ -105,22 +150,23 @@ const Inbox: React.FC = () => {
           </View>
         ) : (
           <View style={{ width: '100%' }}>
-            {notifications.map((notif, idx) => {
-              const NotifWrapper = idx === 0 ? TouchableOpacity : View;
-              const wrapperProps =
-                idx === 0
-                  ? {
-                      onPress: handleFirstNotifPress,
-                      activeOpacity: 0.7,
-                    }
-                  : {};
+            {notifications.map(notif => {
+              const isGiuliaNotif = notif.id === 1 && notif.title === 'Com’è andata con Giulia?';
+
+              const Wrapper = isGiuliaNotif ? TouchableOpacity : View;
+              const wrapperProps = isGiuliaNotif
+                ? {
+                    onPress: handleGiuliaNotificationPress,
+                    activeOpacity: 0.7,
+                  }
+                : {};
 
               return (
-                <NotifWrapper
+                <Wrapper
                   key={notif.id}
                   style={[
                     styles.messageCard,
-                    notif.unread && idx === 0 && !firstNotifRead && styles.messageCardUnread,
+                    notif.unread && isGiuliaNotif && !firstNotifRead && styles.messageCardUnread,
                   ]}
                   {...wrapperProps}
                 >
@@ -129,7 +175,7 @@ const Inbox: React.FC = () => {
                     <Text style={styles.sender}>{notif.title}</Text>
                     <Text style={styles.preview}>{notif.preview}</Text>
                   </View>
-                </NotifWrapper>
+                </Wrapper>
               );
             })}
           </View>
@@ -139,4 +185,4 @@ const Inbox: React.FC = () => {
   );
 };
 
-export default Inbox;
+export default InboxMain;

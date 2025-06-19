@@ -1,28 +1,28 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Inbox from './Inbox';
-import ChatGianni from './Chat';      // chat specifica Gianni
+import InboxMain from './Inbox';
+import Chat from './Chat';
 import Rating from './Rating';
-import ChatPortici from './Portici';  // chat specifica Portici
-import DettaglioChat from './DettaglioChat'; // chat generica
+import Portici from './Portici';
+import DettaglioChat from './DettaglioChat';
 
 export type RootStackParamList = {
-  Inbox: undefined;
-  ChatGianni: undefined;
+  InboxMain: undefined;
+  Chat: undefined;
   Rating: undefined;
   Portici: undefined;
-  DettaglioChat: { senderName: string; initialPreview?:string; id:number;};
+  DettaglioChat: { senderName: string; initialPreview?: string; id: number };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-const InboxStack = () => (
+const InboxStack: React.FC = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Inbox" component={Inbox} />
-    <Stack.Screen name="ChatGianni" component={ChatGianni} />
+    <Stack.Screen name="InboxMain" component={InboxMain} />
+    <Stack.Screen name="Chat" component={Chat} />
     <Stack.Screen name="Rating" component={Rating} />
-    <Stack.Screen name="Portici" component={ChatPortici} />
+    <Stack.Screen name="Portici" component={Portici} />
     <Stack.Screen name="DettaglioChat" component={DettaglioChat} />
   </Stack.Navigator>
 );

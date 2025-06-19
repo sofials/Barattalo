@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Annuncio } from './DettaglioAnnuncio';
+import { Ionicons } from '@expo/vector-icons'; // oppure qualsiasi altra icona che usi
 
 type PrenotazioneProps = {
   annuncio: Annuncio;
@@ -24,6 +25,17 @@ const Prenotazione: React.FC<PrenotazioneProps> = ({ annuncio, onBack, onConferm
     onConferma(message);
   };
 
+  const fieldStyle = {
+    borderWidth: 1,
+    borderColor: '#D8D1FF',
+    borderRadius: 8,
+    padding: 12,
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
+    marginBottom: 12,
+  };
+
   return (
     <View style={{ flex: 1, padding: 24, backgroundColor: '#fff' }}>
       <TouchableOpacity onPress={onBack} style={{ marginBottom: 20 }}>
@@ -34,12 +46,14 @@ const Prenotazione: React.FC<PrenotazioneProps> = ({ annuncio, onBack, onConferm
         Prenota una lezione: {annuncio.titolo}
       </Text>
 
-      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={{ marginBottom: 12 }}>
+      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={fieldStyle}>
         <Text>Data: {formatDate(date)}</Text>
+        <Ionicons name="calendar-outline" size={20} color="#6B53FF" />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setShowTimePicker(true)} style={{ marginBottom: 12 }}>
+      <TouchableOpacity onPress={() => setShowTimePicker(true)} style={fieldStyle}>
         <Text>Orario: {formatTime(date)}</Text>
+        <Ionicons name="time-outline" size={20} color="#6B53FF" />
       </TouchableOpacity>
 
       <TextInput

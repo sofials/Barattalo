@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { useAnnunci, categories, Annuncio } from './AnnunciContext';
 import { usePunti } from './PuntiContext';
 import styles from './Offerte.styles';
@@ -21,8 +22,10 @@ const immagineDefault = require('./images/barattalo.jpeg');
 const { width: screenWidth } = Dimensions.get('window');
 
 const Offerte: React.FC = () => {
+  const route = useRoute<any>();
   const { annunci } = useAnnunci();
   const { punti } = usePunti();
+
   const [search, setSearch] = useState('');
   const [filtroCategorie, setFiltroCategorie] = useState<string[]>([]);
   const [filtroDistanza, setFiltroDistanza] = useState<number>(50);
@@ -30,6 +33,15 @@ const Offerte: React.FC = () => {
   const [annuncioSelezionato, setAnnuncioSelezionato] = useState<Annuncio | null>(null);
   const [prenotazioneAttiva, setPrenotazioneAttiva] = useState<Annuncio | null>(null);
   const [messaggioInviato, setMessaggioInviato] = useState<string | null>(null);
+
+  // Quando la tab diventa attiva o cambia il parametro search, aggiorna il filtro
+  useFocusEffect(
+    React.useCallback(() => {
+      if (route.params?.search !== undefined) {
+        setSearch(route.params.search);
+      }
+    }, [route.params?.search])
+  );
 
   const filteredAnnunci = () =>
     annunci.filter(a => {

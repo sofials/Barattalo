@@ -1,14 +1,12 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View } from 'react-native';
 
 import Home from './Home';
 import Offerte from './Offerte';
 import Aggiungi from './Aggiungi';
 import Eventi from './Eventi';
 import Profilo from './Profilo';
-
-import InboxStack from './InboxStack';
 
 import HomeIcon from './icons/homeIcon.svg';
 import OffersIcon from './icons/offersIcon.svg';
@@ -23,28 +21,27 @@ const MainTabs: React.FC = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       headerBackVisible: false,
+      tabBarStyle: { height: 60 },
+      tabBarItemStyle: { flex: 1 },
       tabBarIcon: ({ color, size, focused }) => {
-        if (route.name === 'Inbox') {
-          // Nessuna icona per la tab Inbox (vuota)
-          return null;
-        }
-
         let IconComponent;
-        if (route.name === 'Home') IconComponent = HomeIcon;
-        else if (route.name === 'Annunci') IconComponent = OffersIcon;
-        else if (route.name === 'Aggiungi') IconComponent = AddIcon;
-        else if (route.name === 'Eventi') IconComponent = EventsIcon;
-        else if (route.name === 'Profilo') IconComponent = ProfileIcon;
-        else return null;
+        switch (route.name) {
+          case 'Home': IconComponent = HomeIcon; break;
+          case 'Annunci': IconComponent = OffersIcon; break;
+          case 'Aggiungi': IconComponent = AddIcon; break;
+          case 'Eventi': IconComponent = EventsIcon; break;
+          case 'Profilo': IconComponent = ProfileIcon; break;
+          default: return null;
+        }
 
         return (
           <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
-            <IconComponent width={size} height={size} fill={color} />
+            <IconComponent fill={color} style={{ flex: 1, width: undefined, height: undefined }} />
             {focused && (
               <CurrentPage
+                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
                 width={size}
                 height={size}
-                style={StyleSheet.absoluteFill}
               />
             )}
           </View>
@@ -60,11 +57,6 @@ const MainTabs: React.FC = () => (
     <Tab.Screen name="Aggiungi" component={Aggiungi} />
     <Tab.Screen name="Eventi" component={Eventi} />
     <Tab.Screen name="Profilo" component={Profilo} />
-    <Tab.Screen
-      name="Inbox"
-      component={InboxStack}
-      options={{ tabBarLabel: 'Inbox' }}
-    />
   </Tab.Navigator>
 );
 

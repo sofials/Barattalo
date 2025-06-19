@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import IdeaDoodle from './icons/ideaDoodle.svg';
 import NotificationsIcon from './icons/notifications.svg';
@@ -7,13 +7,18 @@ import HomeDoodles from './icons/homeDoodles.svg';
 import New from './icons/new.svg';
 import styles from './Home.styles';
 
-
 const { width } = Dimensions.get('window');
 
 export default function Home() {
   const [search, setSearch] = useState('');
   const [hasNew, setHasNew] = useState(true);
   const navigation = useNavigation<any>();
+
+  const onSearchSubmit = () => {
+    if (search.trim() === '') return; // evita ricerca vuota
+    navigation.navigate('Annunci', { search });
+    Keyboard.dismiss();
+  };
 
   return (
     <View style={styles.container}>
@@ -35,17 +40,27 @@ export default function Home() {
           </TouchableOpacity>
         </View>
       </View>
-      
       <View style={styles.centerContent}>
-        <Text style={styles.h1}>Ciao, Elio!</Text>
+  <Text style={styles.h1}>Ciao, Elio!</Text>
+  <View style={styles.searchWrapper}>
+    <View style={styles.searchBox}>
+      <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
           placeholder="Cosa ti serve oggi?"
           value={search}
           onChangeText={setSearch}
+          onSubmitEditing={onSearchSubmit}
+          returnKeyType="search"
         />
-        <HomeDoodles width={width} height={width} style={styles.doodle} />
+        <TouchableOpacity onPress={onSearchSubmit} style={styles.filterButton}>
+          <Text style={styles.filterButtonText}>Cerca</Text>
+        </TouchableOpacity>
       </View>
+    </View>
+  </View>
+  <HomeDoodles width={width} height={width} style={styles.doodle} />
+</View>
     </View>
   );
 }

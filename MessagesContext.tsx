@@ -3,6 +3,7 @@ import { ImageSourcePropType } from 'react-native';
 
 export type Message = {
   id: number;
+  mainMessageId?: number; // 🔧 ID della conversazione principale
   sender: string;
   preview: string;
   image?: ImageSourcePropType;
@@ -10,7 +11,11 @@ export type Message = {
   receiver?: string;
   isnew: boolean;
   offertaTitolo?: string;
+  offertaCategoria?: string;
+  type: 'message' | 'event';
+
 };
+
 
 type MessagesContextType = {
   messages: Message[];
@@ -21,14 +26,17 @@ type MessagesContextType = {
 
 const initialMessages: Message[] = [
   {
-    id: 1,
+     id: 1,
     sender: 'Gianni',
     preview: 'Ciao, saresti disponibile per dare delle ripetizioni di italiano a mio figlio? Fr...',
     image: require('./assets/gianni.png'),
-    unread: true,
+    unread: true, // <-- unread true solo per Gianni all'inizio
     isnew: false,
     receiver: 'Io',
-    offertaTitolo: '- Ripetizioni di italiano'
+    offertaTitolo: 'Ripetizioni di italiano',
+    offertaCategoria: 'Apprendimento',
+    type: 'message',
+    
   },
   {
     id: 2,
@@ -38,6 +46,7 @@ const initialMessages: Message[] = [
     unread: false,
     isnew: false,
     receiver: 'Io',
+    type: 'event',
   },
 ];
 
