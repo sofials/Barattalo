@@ -55,7 +55,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
     descrizione: 'Lezioni di italiano per tutti i livelli. Online o in presenza.',
     puntiAnnuncio: 50,
     isNew: true, 
-    utente: 'Mario', // cognome rimosso
+    utente: 'Mario',
     stelle: 4,
   },
   ...setIsNewFalse([
@@ -67,7 +67,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 5,
       descrizione: 'Lezioni personalizzate per comprendere al meglio la fisica, dall’università alle scuole superiori.',
       puntiAnnuncio: 30,
-      utente: 'Luigi', // cognome rimosso
+      utente: 'Luigi',
       stelle: 4,
     },
     {
@@ -78,7 +78,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 5,
       descrizione: 'Impara lo spagnolo con lezioni pratiche e coinvolgenti, adatte a tutti i livelli.',
       puntiAnnuncio: 30,
-      utente: 'Maria', // cognome rimosso
+      utente: 'Maria',
       stelle: 4,
     },
     {
@@ -89,7 +89,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 5,
       descrizione: 'Migliora il tuo inglese parlato e scritto con lezioni personalizzate e flessibili.',
       puntiAnnuncio: 30,
-      utente: 'John', // cognome rimosso
+      utente: 'John',
       stelle: 4,
     },
     {
@@ -100,7 +100,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 20,
       descrizione: 'Supporto tecnico per problemi hardware e software del tuo computer, rapido e affidabile.',
       puntiAnnuncio: 30,
-      utente: 'Anna', // cambiato da Marco a Anna
+      utente: 'Anna',
       stelle: 4,
     },
     {
@@ -111,7 +111,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 25,
       descrizione: 'Aiuto professionale per trasferire file da dispositivi diversi in modo semplice e sicuro.',
       puntiAnnuncio: 30,
-      utente: 'Laura', // cognome rimosso
+      utente: 'Laura',
       stelle: 4,
     },
     {
@@ -122,7 +122,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 40,
       descrizione: 'Guida pratica per attivare e utilizzare lo SPID, l’identità digitale per i servizi online.',
       puntiAnnuncio: 30,
-      utente: 'Giovanni', // cognome rimosso
+      utente: 'Giovanni',
       stelle: 4,
     },
     {
@@ -133,7 +133,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 20,
       descrizione: 'Corso creativo per imparare le basi del cucito e realizzare progetti unici con le tue mani.',
       puntiAnnuncio: 30,
-      utente: 'Anna', // cognome rimosso
+      utente: 'Anna',
       stelle: 4,
     },
     {
@@ -144,7 +144,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 30,
       descrizione: 'Laboratorio per trasformare materiali di recupero in oggetti originali e sostenibili.',
       puntiAnnuncio: 30,
-      utente: 'Francesca', // cognome rimosso
+      utente: 'Francesca',
       stelle: 4,
     },
     {
@@ -155,7 +155,7 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 2,
       descrizione: 'Realizza decorazioni artigianali fatte a mano per rendere ogni ambiente speciale.',
       puntiAnnuncio: 30,
-      utente: 'Elena', // cognome rimosso
+      utente: 'Elena',
       stelle: 4,
     },
   ]),
