@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   doodle: {
+    width: '100%',
+    aspectRatio: 1, // mantiene proporzioni quadrate, cambia se serve
     marginTop: 0,
     marginBottom: -40,
   },

@@ -11,6 +11,7 @@ import { EventoProvider } from './EventiContext';
 import { PuntiProvider } from './PuntiContext';
 import { MessagesProvider } from './MessagesContext';
 import { NotificationsProvider } from './NotificationsContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
