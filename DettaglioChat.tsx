@@ -47,6 +47,7 @@ const DettaglioChat: React.FC = () => {
         preview: initialPreview,
         unread: false,
         isnew: false,
+        type: 'message',
       },
     ];
   }
@@ -72,6 +73,7 @@ const DettaglioChat: React.FC = () => {
       unread: false,
       isnew: false,
       receiver: interlocutorName,
+      type: 'message',
     };
     setMessages(prev => [...prev, newMessage]);
     setInput('');
