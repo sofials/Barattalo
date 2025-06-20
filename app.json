@@ -26,6 +26,9 @@
     "web": {
       "favicon": "./assets/icon.png"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "extra": {
       "eas": {
         "projectId": "2cbcc04f-0528-4947-b0fb-fd7e9f2293dd"
