@@ -139,6 +139,29 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
+
+  puntiBox: {
+    position: 'absolute',
+    top: 32,
+    right: 24,
+    zIndex: 20,
+  },
+
+  puntiRiquadro: {
+    backgroundColor: '#EBDBCD',
+    borderRadius: 11,
+    paddingHorizontal: 10, // più stretto
+    paddingVertical: 4,    // più basso
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  puntiText: {
+    fontSize: 18,          // più piccolo
+    fontWeight: 'bold',
+    color: '#6B53FF',
+  },
 });
 
 export default styles;

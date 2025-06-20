@@ -1,34 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Font from 'expo-font';
+
 import MainTabs from './MainTabs';
-import Inbox from './Inbox';
-import Chat from './Chat';
-import Rating from './Rating'
-import Portici from './Portici';
-import { AnnuncioProvider } from './AnnunciContext'; 
-import { EventoProvider } from './EventiContext'; // percorso corretto al tuo provider
+import InboxStack from './InboxStack';
 
-const Stack = createStackNavigator();
+import { AnnuncioProvider } from './AnnunciContext';
+import { EventoProvider } from './EventiContext';
+import { PuntiProvider } from './PuntiContext';
+import { MessagesProvider } from './MessagesContext';
+import { NotificationsProvider } from './NotificationsContext';
 
-const App: React.FC = () => {
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      // Font richiesto da react-native-paper
+      'MaterialCommunityIcons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
+    });
+    setFontsLoaded(true);
+  };
+
+  useEffect(() => {
+    loadFonts();
+  }, []);
+
+  if (!fontsLoaded) return null;
+
   return (
-  <AnnuncioProvider>
-    <EventoProvider>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="MainTabs" component={MainTabs} />
-        <Stack.Screen name="Inbox" component={Inbox} />
-        <Stack.Screen name="Chat" component={Chat} />
-        <Stack.Screen name="Rating" component={Rating} />
-        <Stack.Screen name="Portici" component={Portici}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-    </EventoProvider>
-    </AnnuncioProvider>
+      <MessagesProvider>
+        <AnnuncioProvider>
+          <EventoProvider>
+            <PuntiProvider>
+              <NotificationsProvider>
+                <NavigationContainer>
+                  <Stack.Navigator screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="MainTabs" component={MainTabs} />
+                    <Stack.Screen name="Inbox" component={InboxStack} />
+                  </Stack.Navigator>
+                </NavigationContainer>
+              </NotificationsProvider>
+            </PuntiProvider>
+          </EventoProvider>
+        </AnnuncioProvider>
+      </MessagesProvider>
   );
-};
-
-
-
-export default App;
+}

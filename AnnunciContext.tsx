@@ -11,12 +11,14 @@ export type Annuncio = {
   puntiAnnuncio: number;
   isNew?: boolean;
   rating?: number;
+  utente?: string;     
+  stelle?: number;      
 };
 
 export type AnnuncioContextType = {
   annunci: Annuncio[];
   aggiungiAnnuncio: (a: Annuncio) => void;
-  rimuoviAnnuncio: (titolo: string) => void;  // funzione rimuovi
+  rimuoviAnnuncio: (titolo: string) => void;
 };
 
 export const categories = [
@@ -28,10 +30,8 @@ export const categories = [
   'Pulizie',
 ];
 
-// immagine di default
 const immagineDefault = require('./images/barattalo.jpeg');
 
-// Helper per aggiungere isNew: false agli annunci di default
 const setIsNewFalse = (annunci: Annuncio[]): Annuncio[] => {
   return annunci.map(a => ({
     ...a,
@@ -39,7 +39,6 @@ const setIsNewFalse = (annunci: Annuncio[]): Annuncio[] => {
   }));
 };
 
-// Helper per impostare rating di default a 4 negli annunci
 const setDefaultRating = (annunci: Annuncio[]): Annuncio[] => {
   return annunci.map(a => ({
     ...a,
@@ -56,6 +55,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
     descrizione: 'Lezioni di italiano per tutti i livelli. Online o in presenza.',
     puntiAnnuncio: 50,
     isNew: true, 
+    utente: 'Mario',
+    stelle: 4,
   },
   ...setIsNewFalse([
     {
@@ -66,6 +67,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 5,
       descrizione: 'Lezioni personalizzate per comprendere al meglio la fisica, dall’università alle scuole superiori.',
       puntiAnnuncio: 30,
+      utente: 'Luigi',
+      stelle: 4,
     },
     {
       titolo: 'Lezioni di spagnolo',
@@ -75,6 +78,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 5,
       descrizione: 'Impara lo spagnolo con lezioni pratiche e coinvolgenti, adatte a tutti i livelli.',
       puntiAnnuncio: 30,
+      utente: 'Maria',
+      stelle: 4,
     },
     {
       titolo: 'Ripetizioni di inglese',
@@ -84,6 +89,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 5,
       descrizione: 'Migliora il tuo inglese parlato e scritto con lezioni personalizzate e flessibili.',
       puntiAnnuncio: 30,
+      utente: 'John',
+      stelle: 4,
     },
     {
       titolo: 'Assistenza per il pc',
@@ -93,6 +100,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 20,
       descrizione: 'Supporto tecnico per problemi hardware e software del tuo computer, rapido e affidabile.',
       puntiAnnuncio: 30,
+      utente: 'Anna',
+      stelle: 4,
     },
     {
       titolo: 'Trasferire file',
@@ -102,6 +111,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 25,
       descrizione: 'Aiuto professionale per trasferire file da dispositivi diversi in modo semplice e sicuro.',
       puntiAnnuncio: 30,
+      utente: 'Laura',
+      stelle: 4,
     },
     {
       titolo: 'Capire lo spid',
@@ -111,6 +122,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 40,
       descrizione: 'Guida pratica per attivare e utilizzare lo SPID, l’identità digitale per i servizi online.',
       puntiAnnuncio: 30,
+      utente: 'Giovanni',
+      stelle: 4,
     },
     {
       titolo: 'Laboratorio di cucito',
@@ -120,6 +133,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 20,
       descrizione: 'Corso creativo per imparare le basi del cucito e realizzare progetti unici con le tue mani.',
       puntiAnnuncio: 30,
+      utente: 'Anna',
+      stelle: 4,
     },
     {
       titolo: 'Riciclo creativo',
@@ -129,6 +144,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 30,
       descrizione: 'Laboratorio per trasformare materiali di recupero in oggetti originali e sostenibili.',
       puntiAnnuncio: 30,
+      utente: 'Francesca',
+      stelle: 4,
     },
     {
       titolo: 'Decorazioni a mano',
@@ -138,6 +155,8 @@ const annunciDefault: Annuncio[] = setDefaultRating([
       km: 2,
       descrizione: 'Realizza decorazioni artigianali fatte a mano per rendere ogni ambiente speciale.',
       puntiAnnuncio: 30,
+      utente: 'Elena',
+      stelle: 4,
     },
   ]),
 ]);
@@ -154,6 +173,8 @@ export const AnnuncioProvider = ({ children }: { children: ReactNode }) => {
       immagine: a.immagine ?? immagineDefault,
       isNew: a.isNew ?? true,
       rating: typeof a.rating === 'number' && a.rating >= 0 ? a.rating : 4,
+      utente: a.utente ?? 'Utente sconosciuto',
+      stelle: a.stelle ?? 0,
     };
     setAnnunci(prev => [...prev, annuncioConDefaults]);
   };

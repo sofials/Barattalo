@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginLeft: 16,
-    color: '#6B53FF'
+    color: '#6B53FF',
   },
   sectionTabs: {
     flexDirection: 'row',
@@ -33,9 +33,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   tabButtonActive: {
-    borderBottomColor: '#6B53FF', 
-    backgroundColor: '#D8D1FF', 
-    borderRadius: 12,           
+    borderBottomColor: '#6B53FF',
+    backgroundColor: '#D8D1FF',
+    borderRadius: 12,
   },
   tabText: {
     fontSize: 20,
@@ -47,9 +47,9 @@ const styles = StyleSheet.create({
   },
   sectionContent: {
     flex: 1,
-    alignItems: 'stretch', // o 'flex-start'
-    justifyContent: 'flex-start', // <-- cambia da 'center' a 'flex-start'
-    paddingTop: 0, // opzionale, puoi aggiungere un piccolo padding se vuoi
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
+    paddingTop: 0,
   },
   messageCard: {
     flexDirection: 'row',
@@ -82,6 +82,30 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#555',
     marginTop: 2,
+  },
+  // Nuovi stili filtro messaggi
+  filterButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  filterButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: '#eee',
+    marginHorizontal: 6,
+  },
+  filterButtonActive: {
+    backgroundColor: '#6B53FF',
+  },
+  filterText: {
+    fontSize: 16,
+    color: '#000',
+  },
+  filterButtonActiveText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
