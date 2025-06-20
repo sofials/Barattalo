@@ -52,11 +52,51 @@ const MainTabs: React.FC = () => (
       headerShown: false,
     })}
   >
-    <Tab.Screen name="Home" component={Home} />
-    <Tab.Screen name="Annunci" component={Offerte} />
-    <Tab.Screen name="Aggiungi" component={Aggiungi} />
-    <Tab.Screen name="Eventi" component={Eventi} />
-    <Tab.Screen name="Profilo" component={Profilo} />
+    <Tab.Screen
+      name="Home"
+      component={Home}
+      listeners={({ navigation, route }) => ({
+        tabPress: e => {
+          navigation.navigate('Home');
+        },
+      })}
+    />
+    <Tab.Screen
+      name="Annunci"
+      component={Offerte}
+      listeners={({ navigation, route }) => ({
+        tabPress: e => {
+          navigation.navigate('Annunci');
+        },
+      })}
+    />
+    <Tab.Screen
+      name="Aggiungi"
+      component={Aggiungi}
+      listeners={({ navigation, route }) => ({
+        tabPress: e => {
+          navigation.navigate('Aggiungi');
+        },
+      })}
+    />
+    <Tab.Screen
+      name="Eventi"
+      component={Eventi}
+      listeners={({ navigation, route }) => ({
+        tabPress: e => {
+          navigation.navigate('Eventi');
+        },
+      })}
+    />
+    <Tab.Screen
+      name="Profilo"
+      component={Profilo}
+      listeners={({ navigation, route }) => ({
+        tabPress: e => {
+          navigation.navigate('Profilo');
+        },
+      })}
+    />
   </Tab.Navigator>
 );
 

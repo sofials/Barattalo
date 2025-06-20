@@ -41,7 +41,7 @@ const DettaglioChat: React.FC = () => {
   if (chatMessages.length === 0 && initialPreview && initialPreview.trim() !== '') {
     chatMessages = [
       {
-        id: 0, // id fittizio
+        id: 0,
         sender: senderName,
         receiver: 'Io',
         preview: initialPreview,
@@ -67,9 +67,10 @@ const DettaglioChat: React.FC = () => {
     if (input.trim() === '') return;
 
     const newMessage: Message = {
-      id: Date.now(),
-      sender: 'Io',
-      preview: input.trim(),
+      id: 123,
+      sender: 'Mario',
+      receiver: 'Io',
+      preview: 'Ciao!',
       unread: false,
       isnew: false,
       receiver: interlocutorName,
