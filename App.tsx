@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Font from 'expo-font';
-import { Provider as PaperProvider } from 'react-native-paper';
 
 import MainTabs from './MainTabs';
 import InboxStack from './InboxStack';
@@ -33,7 +32,6 @@ export default function App() {
   if (!fontsLoaded) return null;
 
   return (
-    <PaperProvider>
       <MessagesProvider>
         <AnnuncioProvider>
           <EventoProvider>
@@ -50,6 +48,5 @@ export default function App() {
           </EventoProvider>
         </AnnuncioProvider>
       </MessagesProvider>
-    </PaperProvider>
   );
 }

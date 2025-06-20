@@ -47,7 +47,7 @@ const DettaglioChat: React.FC = () => {
         preview: initialPreview,
         unread: false,
         isnew: false,
-        type: 'message', // usa un valore valido
+        type: 'message',
       },
     ];
   }
@@ -73,7 +73,8 @@ const DettaglioChat: React.FC = () => {
       preview: 'Ciao!',
       unread: false,
       isnew: false,
-      type: 'message', // aggiungi questa riga
+      receiver: interlocutorName,
+      type: 'message',
     };
     setMessages(prev => [...prev, newMessage]);
     setInput('');
