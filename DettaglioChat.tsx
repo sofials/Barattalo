@@ -67,15 +67,15 @@ const DettaglioChat: React.FC = () => {
     if (input.trim() === '') return;
 
     const newMessage: Message = {
-      id: 123,
-      sender: 'Mario',
-      receiver: 'Io',
-      preview: 'Ciao!',
-      unread: false,
-      isnew: false,
-      receiver: interlocutorName,
-      type: 'message',
-    };
+  id: 123,
+  sender: 'Mario',
+  preview: 'Ciao!',
+  unread: false,
+  isnew: false,
+  receiver: interlocutorName,
+  type: 'message',
+};
+
     setMessages(prev => [...prev, newMessage]);
     setInput('');
 

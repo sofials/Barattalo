@@ -41,26 +41,27 @@ export default function Home() {
         </View>
       </View>
       <View style={styles.centerContent}>
-  <Text style={styles.h1}>Ciao, Elio!</Text>
-  <View style={styles.searchWrapper}>
-    <View style={styles.searchBox}>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Cosa ti serve oggi?"
-          value={search}
-          onChangeText={setSearch}
-          onSubmitEditing={onSearchSubmit}
-          returnKeyType="search"
-        />
-        <TouchableOpacity onPress={onSearchSubmit} style={styles.filterButton}>
-          <Text style={styles.filterButtonText}>Cerca</Text>
-        </TouchableOpacity>
+        <Text style={styles.h1}>Ciao, Elio!</Text>
+        <View style={styles.searchWrapper}>
+          <View style={styles.searchBox}>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Cosa ti serve oggi?"
+                value={search}
+                onChangeText={setSearch}
+                onSubmitEditing={onSearchSubmit}
+                returnKeyType="search"
+              />
+              <TouchableOpacity onPress={onSearchSubmit} style={styles.filterButton}>
+                <Text style={styles.filterButtonText}>Cerca</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+        {/* Qui la modifica */}
+        <HomeDoodles width={width} height={undefined} style={styles.doodle} />
       </View>
-    </View>
-  </View>
-  <HomeDoodles width={width} height={width} style={styles.doodle} />
-</View>
     </View>
   );
 }

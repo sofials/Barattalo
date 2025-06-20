@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import InboxMain from './Inbox';
 import Chat from './Chat';
@@ -15,7 +15,7 @@ export type RootStackParamList = {
   DettaglioChat: { senderName: string; initialPreview?: string; id: number };
 };
 
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const InboxStack: React.FC = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
